@@ -1,0 +1,566 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "cat": "GLP-1 / GIP",
+      "name": "Tirzepatide",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-TZP-01",
+      "img": "tirzepatide",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 59.99
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "cat": "GHRH / GHRP",
+      "name": "CJC-1295 + Ipamorelin",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-CJC-01",
+      "img": "cjc-ipamorelin",
+      "sizes": [
+        {
+          "label": "5mg / 5mg",
+          "price": 54.99
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "cat": "Metabolic",
+      "name": "MOTS-c",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-MTS-01",
+      "img": "mots-c",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 34.99
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "cat": "Cosmetic",
+      "name": "GHK-Cu",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-GHK-01",
+      "img": "ghk-cu",
+      "sizes": [
+        {
+          "label": "50mg",
+          "price": 34.99
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "cat": "Cosmetic",
+      "name": "AHK-Cu",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-AHK-01",
+      "img": "ahk-cu",
+      "sizes": [
+        {
+          "label": "50mg",
+          "price": 39.99
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "cat": "Longevity",
+      "name": "NAD+",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-NAD-01",
+      "img": "nad",
+      "sizes": [
+        {
+          "label": "1000mg",
+          "price": 44.99
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "cat": "Growth",
+      "name": "IGF-1 LR3",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-IGF-01",
+      "img": "igf-1-lr3",
+      "sizes": [
+        {
+          "label": "1mg",
+          "price": 44.99
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "cat": "Recovery",
+      "name": "TB-500",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-TB5-01",
+      "img": "tb-500",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 44.99
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "cat": "Recovery",
+      "name": "KPV",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-KPV-01",
+      "img": "kpv",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 39.99
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "cat": "Recovery",
+      "name": "ARA-290",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-ARA-01",
+      "img": "ara-290",
+      "sizes": [
+        {
+          "label": "16mg",
+          "price": 44.99
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "cat": "GHRH / GHRP",
+      "name": "Tesamorelin",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-TES-01",
+      "img": "tesamorelin",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 54.99
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "cat": "GHRH / GHRP",
+      "name": "Sermorelin Acetate",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-SER-01",
+      "img": "sermorelin",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 39.99
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "cat": "Nootropic",
+      "name": "Selank",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-SLK-01",
+      "img": "selank",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 39.99
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "cat": "Nootropic",
+      "name": "SEMAX",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-SMX-01",
+      "img": "semax",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 39.99
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "cat": "Wellness",
+      "name": "Kisspeptin-10",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-KIS-01",
+      "img": "kisspeptin",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 39.99
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "cat": "Wellness",
+      "name": "PT-141",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-PT1-01",
+      "img": "pt-141",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 39.99
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "cat": "Wellness",
+      "name": "HCG",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-HCG-01",
+      "img": "hcg",
+      "sizes": [
+        {
+          "label": "5000iu",
+          "price": 49.99
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "cat": "Blends",
+      "name": "GLOW Blend",
+      "spec": "BPC-157 + GHK-Cu + TB-500",
+      "status": "stock",
+      "lot": "SMG-GLW-01",
+      "img": "glow",
+      "sizes": [
+        {
+          "label": "1 vial",
+          "price": 69.99
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "cat": "Supplies",
+      "name": "Bacteriostatic Water",
+      "spec": "Multi-dose USP",
+      "status": "stock",
+      "lot": "SMG-BAC-01",
+      "img": "bac-water",
+      "sizes": [
+        {
+          "label": "30mL",
+          "price": 9.99
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "cat": "GLP-1 / GIP",
+      "name": "GLP3-R",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-RTA-01",
+      "img": "r3ta",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 54.99
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "cat": "GLP-1 / GIP",
+      "name": "Cagrilintide",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-CAG-01",
+      "img": "cagrilintide",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 44.99
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "cat": "Recovery",
+      "name": "BPC-157",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-BPC-01",
+      "img": "bpc-157",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 34.99
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "cat": "Metabolic",
+      "name": "AOD-9604",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-AOD-01",
+      "img": "aod-9604",
+      "sizes": [
+        {
+          "label": "5mg",
+          "price": 39.99
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "cat": "Metabolic",
+      "name": "5-Amino-1MQ",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-5AM-01",
+      "img": "5-amino-1mq",
+      "sizes": [
+        {
+          "label": "50mg",
+          "price": 44.99
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "cat": "Blends",
+      "name": "KLOW Blend",
+      "spec": "KPV + BPC-157 + GHK-Cu + TB-500",
+      "status": "stock",
+      "lot": "SMG-KLW-01",
+      "img": "klow",
+      "sizes": [
+        {
+          "label": "1 vial",
+          "price": 89.99
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "cat": "Blends",
+      "name": "Wolverine Blend",
+      "spec": "BPC-157 + TB-500",
+      "status": "stock",
+      "lot": "SMG-WLV-01",
+      "img": "wolverine",
+      "sizes": [
+        {
+          "label": "1 vial",
+          "price": 44.99
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "cat": "Longevity",
+      "name": "SS-31",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-SS31-01",
+      "img": "ss-31",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 44.99
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "cat": "Longevity",
+      "name": "Epithalon",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-EPI-01",
+      "img": "epithalon",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 44.99
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "cat": "GHRH / GHRP",
+      "name": "GHRP-6",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-GH6-01",
+      "img": "ghrp-6",
+      "sizes": [
+        {
+          "label": "5mg",
+          "price": 24.99
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "cat": "GHRH / GHRP",
+      "name": "Ipamorelin",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-IPA-01",
+      "img": "ipamorelin",
+      "sizes": [
+        {
+          "label": "5mg",
+          "price": 29.99
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "cat": "Growth",
+      "name": "HGH",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-HGH-01",
+      "img": "hgh",
+      "sizes": [
+        {
+          "label": "10iu",
+          "price": 99.99
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "cat": "Cosmetic",
+      "name": "Melanotan II",
+      "spec": "≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-MT2-01",
+      "img": "melanotan-2",
+      "sizes": [
+        {
+          "label": "10mg",
+          "price": 34.99
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "cat": "Supplies",
+      "name": "Acetic Acid Water",
+      "spec": "Sterile diluent",
+      "status": "stock",
+      "lot": "SMG-ACE-01",
+      "img": "acetic-acid-water",
+      "sizes": [
+        {
+          "label": "30mL",
+          "price": 9.99
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "cat": "Supplies",
+      "name": "Sharps Container",
+      "spec": "Puncture-resistant",
+      "status": "stock",
+      "lot": "SMG-SHP-01",
+      "img": "sharps-container",
+      "sizes": [
+        {
+          "label": "1 unit",
+          "price": 9.99
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "cat": "Supplies",
+      "name": "Research Kit",
+      "spec": "Sharps + vial + syringes + prep pads",
+      "status": "stock",
+      "lot": "SMG-KIT-01",
+      "img": "research-kit",
+      "sizes": [
+        {
+          "label": "1 kit",
+          "price": 24.99
+        }
+      ]
+    }
+  ],
+  "bios": {
+    "Tirzepatide": "A dual GIP and GLP-1 receptor agonist studied in metabolic and adipose-tissue research. Investigated for its role in glucose regulation, appetite signaling, and energy-balance pathways within laboratory models.",
+    "CJC-1295 + Ipamorelin": "A dual growth-hormone signaling blend. CJC-1295 (No DAC) is a GHRH analog that stimulates the pituitary, while Ipamorelin selectively activates the ghrelin receptor. Studied together for pulsatile GH release, IGF-1 pathways, and tissue-recovery research.",
+    "MOTS-c": "A mitochondrial-derived peptide studied for its role in cellular metabolism, energy utilization, and metabolic-regulation pathways. Of interest in longevity and mitochondrial-signaling research.",
+    "GHK-Cu": "A copper-binding tripeptide studied for its role in skin biology, collagen regulation, and extracellular-matrix maintenance. Widely investigated in regenerative and cosmetic research models.",
+    "AHK-Cu": "A copper-binding tripeptide (Alanine-Histidine-Lysine) studied in hair-follicle biology, cellular regeneration, and growth-factor signaling. Investigated for tissue remodeling and follicular-activity research.",
+    "NAD+": "Nicotinamide adenine dinucleotide, a coenzyme central to cellular energy metabolism. Studied for its role in mitochondrial function, DNA repair signaling, and longevity-related pathways.",
+    "IGF-1 LR3": "A long-acting analog of insulin-like growth factor 1. Studied for cellular growth, protein synthesis, and tissue-repair signaling pathways in laboratory research.",
+    "TB-500": "A synthetic version of Thymosin Beta-4 studied for its role in cellular migration, angiogenesis, and tissue-repair pathways. Widely investigated in recovery and connective-tissue research.",
+    "KPV": "A tripeptide fragment of alpha-MSH studied for its anti-inflammatory signaling and role in gut-barrier and immune-pathway research.",
+    "ARA-290": "Also known as Cibinetide, a synthetic erythropoietin-derived peptide studied for tissue-protective and anti-inflammatory signaling — without stimulating red-blood-cell production. Investigated in nerve-repair and cellular-recovery research.",
+    "Tesamorelin": "A synthetic growth-hormone-releasing hormone (GHRH) analog studied for its interaction with pituitary signaling and its role in metabolic and adipose-tissue research.",
+    "Sermorelin Acetate": "A GHRH analog studied for stimulating natural growth-hormone release through pituitary signaling. Investigated in endocrine and metabolic research models.",
+    "Selank": "A synthetic peptide studied for its role in anxiety-related signaling, cognitive pathways, and neuro-modulation research.",
+    "SEMAX": "A synthetic peptide derived from an ACTH fragment, studied for neuroprotective signaling, cognitive pathways, and BDNF-related research.",
+    "Kisspeptin-10": "A peptide studied for its role in reproductive-endocrine signaling and regulation of the hypothalamic-pituitary-gonadal axis in laboratory research.",
+    "PT-141": "Also known as Bremelanotide, a melanocortin-receptor agonist studied for its role in central-nervous-system signaling pathways in research models.",
+    "HCG": "Human chorionic gonadotropin, studied for its role in endocrine signaling and reproductive-pathway research.",
+    "GLOW Blend": "A recovery and skin-focused research blend combining BPC-157, GHK-Cu, and TB-500 — studied for tissue-repair, regenerative, and extracellular-matrix signaling pathways.",
+    "Bacteriostatic Water": "Sterile 0.9% benzyl-alcohol water used as a diluent for reconstituting lyophilized research compounds. Preservative formulation supports multi-use laboratory preparation under sterile technique.",
+    "GLP3-R": "A triple receptor agonist studied across the GIP, GLP-1, and glucagon receptor families. Investigated in metabolic research for glucose regulation, appetite signaling, and energy-expenditure pathways — the current apex of incretin research compounds.",
+    "Cagrilintide": "A long-acting amylin analog studied for its role in appetite regulation and metabolic signaling. Investigated on its own and alongside GLP-1 compounds in weight-management research models.",
+    "BPC-157": "Body Protection Compound-157, a synthetic peptide derived from a protein found in gastric juice. Studied extensively for tissue repair, angiogenesis, and anti-inflammatory signaling — popular in tendon, ligament, muscle, and gut-healing research.",
+    "AOD-9604": "A modified fragment of human growth hormone (residues 176–191) studied for fat metabolism and lipolytic signaling. Investigated for its ability to mimic GH's fat-burning effects without affecting blood sugar or growth pathways.",
+    "5-Amino-1MQ": "A small-molecule NNMT inhibitor studied for its role in cellular metabolism, NAD+ regulation, and adipocyte signaling. Investigated in metabolic and longevity research models.",
+    "KLOW Blend": "A comprehensive recovery and skin research blend combining KPV, BPC-157, GHK-Cu, and TB-500 — studied for tissue-repair, anti-inflammatory, and regenerative signaling pathways.",
+    "Wolverine Blend": "A recovery-focused research blend pairing BPC-157 and TB-500 — studied together for tissue repair, cellular migration, and connective-tissue regeneration pathways.",
+    "SS-31": "Also known as Elamipretide, a mitochondria-targeted peptide studied for its role in stabilizing cardiolipin on the inner mitochondrial membrane. Investigated for mitochondrial function, cellular energy production, and oxidative-stress pathways in longevity research.",
+    "Epithalon": "A synthetic tetrapeptide (Ala-Glu-Asp-Gly) studied for its role in telomerase activity, circadian regulation, and cellular-aging pathways. Widely investigated in longevity and pineal-signaling research.",
+    "GHRP-6": "A growth-hormone-releasing hexapeptide studied for its role in ghrelin-receptor activation and pulsatile GH release. Investigated for appetite signaling and tissue-recovery pathways in laboratory research.",
+    "Ipamorelin": "A selective growth-hormone secretagogue studied for its clean, targeted stimulation of GH release via the ghrelin receptor — without significantly affecting cortisol or prolactin. Investigated in recovery and GH-signaling research.",
+    "HGH": "Human growth hormone, studied for its central role in cellular growth, protein synthesis, metabolism, and tissue-repair signaling across a wide range of laboratory research models.",
+    "Melanotan II": "A synthetic melanocortin analog studied for its role in melanogenesis (pigmentation) and central melanocortin-receptor signaling. Investigated in pigmentation and appetite-pathway research.",
+    "Acetic Acid Water": "Dilute acetic acid solution used as a reconstitution diluent for peptides with poor solubility in bacteriostatic water. Supports laboratory preparation under sterile technique.",
+    "Sharps Container": "A puncture-resistant biohazard container for the safe disposal of used needles and syringes in a research setting. Supports secure, compliant sharps handling.",
+    "Research Kit": "An all-in-one research starter kit — includes a puncture-resistant sharps container, a research solution vial, insulin syringes, and 70% isopropyl alcohol prep pads. Everything needed for clean, compliant laboratory handling."
+  }
+}

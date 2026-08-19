@@ -1,0 +1,8 @@
+# SMG Performance Labs — robots.txt
+User-agent: *
+Allow: /
+# Keep the private admin panel out of search results
+Disallow: /admin.html
+
+# When you connect a custom domain, update this URL too
+Sitemap: https://snazzy-gecko-46df61.netlify.app/sitemap.xml

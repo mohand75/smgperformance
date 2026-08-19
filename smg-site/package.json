@@ -1,0 +1,9 @@
+{
+  "name": "smg-performance-labs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SMG Performance Labs storefront + admin (Netlify)",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

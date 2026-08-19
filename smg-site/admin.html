@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>SMG Admin — Manage Products</title>
+<style>
+  :root{
+    --bg:#0d0f0b; --panel:#151a10; --panel2:#1b2114; --line:#2a3320;
+    --text:#e8ede0; --muted:#8b9680; --lime:#a3e635; --amber:#f59e0b; --red:#ef4444;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.5}
+  a{color:var(--lime)}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 16px 80px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px;border-bottom:1px solid var(--line);padding-bottom:16px}
+  h1{font-size:20px;margin:0;letter-spacing:.5px}
+  h1 span{color:var(--lime)}
+  .sub{color:var(--muted);font-size:13px;margin:2px 0 0}
+  button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:9px 14px;transition:.15s}
+  button:hover{border-color:var(--lime)}
+  button.primary{background:var(--lime);color:#0d0f0b;border-color:var(--lime);font-weight:700}
+  button.primary:hover{filter:brightness(1.08)}
+  button.danger{color:var(--red);border-color:#3a2020}
+  button.danger:hover{border-color:var(--red)}
+  input,select,textarea{width:100%;font:inherit;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px 10px}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--lime)}
+  label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:0 0 4px}
+
+  /* Login + Reset */
+  #login,#reset{max-width:380px;margin:12vh auto 0;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px}
+  #login h1,#reset h1{margin-bottom:6px}
+  #login .row,#reset .row{margin-top:16px}
+  .msg{font-size:13px;margin-top:12px;display:none}
+  .msg.err{color:var(--red);display:block}
+  .msg.ok{color:var(--lime);display:block}
+
+  /* Account modal */
+  .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:6vh 16px;overflow:auto}
+  .modal-ov.open{display:flex}
+  .modal{width:100%;max-width:440px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .modal-head h2{margin:0;font-size:18px}
+  .acct-sec{border-top:1px solid var(--line);padding-top:16px;margin-top:16px}
+  .acct-sec h3{margin:0 0 4px;font-size:14px}
+  .acct-sec label{margin-top:12px}
+  .acct-sec input{margin-top:4px}
+  .acct-sec .primary{margin-top:14px}
+  .acct-sec select{margin-top:4px}
+  .pay-status{font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin:6px 0 4px}
+  .pay-status code{background:var(--panel2);padding:1px 5px;border-radius:4px}
+
+  /* Editor */
+  #editor{display:none}
+  .toolbar{position:sticky;top:0;z-index:5;background:rgba(13,15,11,.92);backdrop-filter:blur(6px);display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 0;margin-bottom:8px;border-bottom:1px solid var(--line)}
+  .toolbar .grow{flex:1}
+  .count{color:var(--muted);font-size:13px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+  .card.out{opacity:.55}
+  .grid{display:grid;grid-template-columns:2fr 1.4fr 1fr 1fr;gap:12px}
+  .grid3{display:grid;grid-template-columns:2fr 1.4fr 1fr;gap:12px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px}
+  /* sizes editor */
+  .sizes{margin-top:14px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
+  .sizelist{display:flex;flex-direction:column;gap:8px;margin:6px 0 10px}
+  .sizerow{display:grid;grid-template-columns:1fr 150px 40px;gap:8px;align-items:center}
+  .s-price{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding-left:10px}
+  .s-price span{color:var(--muted)}
+  .s-price input{border:none;background:transparent;padding-left:4px}
+  .s-price input:focus{outline:none}
+  .xbtn{padding:8px 0;width:40px;text-align:center}
+  .addsize{background:transparent;border:1px dashed var(--line);color:var(--lime);padding:7px 12px;font-size:13px}
+  .addsize:hover{border-color:var(--lime)}
+  @media(max-width:720px){.grid3{grid-template-columns:1fr 1fr}.sizerow{grid-template-columns:1fr 120px 40px}}
+  .cardhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .cardhead .idx{font-size:12px;color:var(--muted)}
+  .full{margin-top:12px}
+  .hint{font-size:11px;color:var(--muted);margin-top:4px}
+  @media(max-width:720px){.grid{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+  .savebar{position:fixed;left:0;right:0;bottom:0;background:rgba(13,15,11,.96);border-top:1px solid var(--line);padding:12px 16px;display:flex;justify-content:center;gap:12px;align-items:center}
+  .savebar .inner{width:100%;max-width:1000px;display:flex;gap:12px;align-items:center}
+  .spinner{display:inline-block;width:14px;height:14px;border:2px solid #0d0f0b;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="login">
+  <h1>SMG <span>Admin</span></h1>
+  <p class="sub">Manage your products. Enter your admin password to continue.</p>
+  <div class="row">
+    <label for="pw">Admin password</label>
+    <input id="pw" type="password" autocomplete="current-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+  </div>
+  <div class="row">
+    <button class="primary" style="width:100%" id="loginBtn" onclick="doLogin()">Unlock</button>
+  </div>
+  <div class="msg" id="loginMsg"></div>
+  <p class="hint" style="margin-top:18px"><a href="#" onclick="showReset(true);return false;">Forgot password?</a> — reset it with your recovery code.</p>
+</div>
+
+<!-- ══════════ RESET (recovery code) ══════════ -->
+<div id="reset" style="display:none">
+  <h1>Reset <span>password</span></h1>
+  <p class="sub">Enter your recovery code and choose a new password.</p>
+  <div class="row">
+    <label for="rc">Recovery code</label>
+    <input id="rc" type="text" autocomplete="off" placeholder="Your recovery code">
+  </div>
+  <div class="row">
+    <label for="rnew">New password</label>
+    <input id="rnew" type="password" autocomplete="new-password" placeholder="At least 8 characters">
+  </div>
+  <div class="row">
+    <button class="primary" style="width:100%" id="resetBtn" onclick="doReset()">Set new password</button>
+  </div>
+  <div class="msg" id="resetMsg"></div>
+  <p class="hint" style="margin-top:18px"><a href="#" onclick="showReset(false);return false;">← Back to login</a></p>
+</div>
+
+<!-- ══════════ EDITOR ══════════ -->
+<div id="editor" class="wrap">
+  <header>
+    <div>
+      <h1>SMG <span>Admin</span> — Products</h1>
+      <p class="sub">Edit anything, then hit <strong>Save all changes</strong>. Your live store updates within a minute.</p>
+    </div>
+    <div style="display:flex;gap:10px">
+      <a href="/" target="_blank"><button>View store ↗</button></a>
+      <button onclick="openAccount()">Account</button>
+      <button onclick="location.reload()">Reload</button>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <button class="primary" onclick="addProduct()">+ Add product</button>
+    <div class="grow"></div>
+    <span class="count" id="count"></span>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="savebar">
+    <div class="inner">
+      <button class="primary" id="saveBtn" onclick="saveAll()">Save all changes</button>
+      <span class="msg" id="saveMsg"></span>
+      <div class="grow"></div>
+      <span class="count">Tip: set status to <strong>Restocking</strong> to hide the Add button and show “Notify”.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ACCOUNT MODAL ══════════ -->
+<div id="acctOv" class="modal-ov" onclick="if(event.target===this)closeAccount()">
+  <div class="modal">
+    <div class="modal-head"><h2>Account</h2><button class="xbtn" onclick="closeAccount()">✕</button></div>
+
+    <section class="acct-sec">
+      <h3>Change password</h3>
+      <label>Current password</label>
+      <input id="ac_cur" type="password" autocomplete="current-password" placeholder="Current password">
+      <label>New password</label>
+      <input id="ac_new" type="password" autocomplete="new-password" placeholder="At least 8 characters">
+      <button class="primary" onclick="changePassword()">Update password</button>
+      <div class="msg" id="ac_pwMsg"></div>
+    </section>
+
+    <section class="acct-sec">
+      <h3>Change recovery code</h3>
+      <p class="hint">This is the code that resets your password if you forget it. Keep it somewhere safe.</p>
+      <label>Current password</label>
+      <input id="ac_rcpw" type="password" autocomplete="current-password" placeholder="Confirm with your password">
+      <label>New recovery code</label>
+      <input id="ac_rc" type="text" autocomplete="off" placeholder="At least 6 characters">
+      <button class="primary" onclick="changeRecovery()">Update recovery code</button>
+      <div class="msg" id="ac_rcMsg"></div>
+    </section>
+
+    <section class="acct-sec">
+      <h3>Payment settings (Square)</h3>
+      <p class="hint">Connect your own Square account — customer payments go here. Find these in your Square dashboard under Developer → Applications → Credentials, and Locations.</p>
+      <div class="pay-status" id="pay_status">Checking…</div>
+      <label>Square access token</label>
+      <input id="pay_token" type="password" autocomplete="off" placeholder="Paste your Square access token">
+      <label>Location ID</label>
+      <input id="pay_loc" type="text" autocomplete="off" placeholder="e.g. LXXXXXXXXXXXX">
+      <label>Mode</label>
+      <select id="pay_env">
+        <option value="production">Production (live payments)</option>
+        <option value="sandbox">Sandbox (testing only)</option>
+      </select>
+      <button class="primary" onclick="savePayment()">Save payment settings</button>
+      <div class="msg" id="pay_msg"></div>
+    </section>
+  </div>
+</div>
+
+<script>
+  const API_SAVE = '/.netlify/functions/save-products';
+  const API_GET  = '/.netlify/functions/get-products';
+  const API_AUTH = '/.netlify/functions/admin-auth';
+  const STATUSES = [['stock','In Stock'],['feat','Featured'],['restock','Restocking']];
+
+  let PASSWORD = '';
+  let products = [];
+  let bios = {};
+
+  async function auth(payload){
+    const res = await fetch(API_AUTH, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(()=>({}));
+    return { ok: res.ok && data.ok, data };
+  }
+
+  // ---------- LOGIN ----------
+  function showReset(on){
+    document.getElementById('login').style.display = on ? 'none' : 'block';
+    document.getElementById('reset').style.display = on ? 'block' : 'none';
+  }
+
+  async function doLogin(){
+    const pw = document.getElementById('pw').value;
+    const msg = document.getElementById('loginMsg');
+    const btn = document.getElementById('loginBtn');
+    msg.className = 'msg';
+    if(!pw){ msg.textContent='Enter your password.'; msg.className='msg err'; return; }
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+    try{
+      const { ok, data } = await auth({ action:'login', password: pw });
+      if(ok){
+        PASSWORD = pw;
+        document.getElementById('login').style.display='none';
+        document.getElementById('editor').style.display='block';
+        await loadCatalog();
+      } else {
+        msg.textContent = data.error || 'Wrong password.'; msg.className='msg err';
+      }
+    }catch(e){
+      msg.textContent = 'Could not reach the server. Is the site deployed on Netlify?'; msg.className='msg err';
+    }finally{
+      btn.disabled = false; btn.textContent = 'Unlock';
+    }
+  }
+
+  async function doReset(){
+    const rc = document.getElementById('rc').value.trim();
+    const np = document.getElementById('rnew').value;
+    const msg = document.getElementById('resetMsg');
+    const btn = document.getElementById('resetBtn');
+    msg.className = 'msg';
+    if(!rc || !np){ msg.textContent='Enter your recovery code and a new password.'; msg.className='msg err'; return; }
+    if(np.length < 8){ msg.textContent='New password must be at least 8 characters.'; msg.className='msg err'; return; }
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+    try{
+      const { ok, data } = await auth({ action:'reset', recovery: rc, newPassword: np });
+      if(ok){
+        msg.textContent = '✓ Password updated. You can log in with it now.'; msg.className='msg ok';
+        setTimeout(()=>{ showReset(false); document.getElementById('pw').value=np; }, 1200);
+      } else {
+        msg.textContent = data.error || 'Reset failed.'; msg.className='msg err';
+      }
+    }catch(e){
+      msg.textContent='Could not reach the server.'; msg.className='msg err';
+    }finally{
+      btn.disabled=false; btn.textContent='Set new password';
+    }
+  }
+
+  // ---------- ACCOUNT ----------
+  function openAccount(){ document.getElementById('acctOv').classList.add('open'); loadPaymentStatus(); }
+  function closeAccount(){
+    document.getElementById('acctOv').classList.remove('open');
+    ['ac_cur','ac_new','ac_rcpw','ac_rc','pay_token','pay_loc'].forEach(id=>document.getElementById(id).value='');
+    ['ac_pwMsg','ac_rcMsg','pay_msg'].forEach(id=>{ const m=document.getElementById(id); m.className='msg'; m.textContent=''; });
+  }
+
+  async function loadPaymentStatus(){
+    const el = document.getElementById('pay_status');
+    try{
+      const { ok, data } = await auth({ action:'payment-status', password: PASSWORD });
+      if(!ok){ el.textContent = 'Could not load payment status.'; return; }
+      if(data.source === 'none'){
+        el.innerHTML = '<b style="color:var(--amber)">Not connected.</b> Add your Square account below to take payments.';
+      } else {
+        const where = data.source === 'admin' ? 'saved here' : 'from Netlify';
+        el.innerHTML = `<b style="color:var(--lime)">Connected</b> (${where}) · Location <code>${data.locationId}</code> · ${data.env} · token …${data.last4}`;
+        document.getElementById('pay_loc').placeholder = data.locationId;
+        document.getElementById('pay_env').value = data.env;
+      }
+    }catch(e){ el.textContent = 'Could not load payment status.'; }
+  }
+
+  async function savePayment(){
+    const token=document.getElementById('pay_token').value.trim();
+    const loc=document.getElementById('pay_loc').value.trim();
+    const env=document.getElementById('pay_env').value;
+    const msg=document.getElementById('pay_msg'); msg.className='msg';
+    if(!token||!loc){ msg.textContent='Enter your Square access token and location ID.'; msg.className='msg err'; return; }
+    if(env==='production' && !confirm('Save LIVE Square settings? Real customer payments will go to this account.')) return;
+    const { ok, data } = await auth({ action:'save-payment', password: PASSWORD, accessToken:token, locationId:loc, env });
+    if(ok){
+      msg.textContent='✓ Square account connected.'; msg.className='msg ok';
+      document.getElementById('pay_token').value=''; document.getElementById('pay_loc').value='';
+      loadPaymentStatus();
+    } else { msg.textContent=data.error||'Could not save.'; msg.className='msg err'; }
+  }
+  async function changePassword(){
+    const cur=document.getElementById('ac_cur').value, np=document.getElementById('ac_new').value;
+    const msg=document.getElementById('ac_pwMsg'); msg.className='msg';
+    if(!cur||!np){ msg.textContent='Fill in both fields.'; msg.className='msg err'; return; }
+    if(np.length<8){ msg.textContent='New password must be at least 8 characters.'; msg.className='msg err'; return; }
+    const { ok, data } = await auth({ action:'change-password', password:cur, newPassword:np });
+    if(ok){ PASSWORD=np; msg.textContent='✓ Password updated.'; msg.className='msg ok';
+      document.getElementById('ac_cur').value=''; document.getElementById('ac_new').value=''; }
+    else { msg.textContent=data.error||'Could not update.'; msg.className='msg err'; }
+  }
+  async function changeRecovery(){
+    const pw=document.getElementById('ac_rcpw').value, nc=document.getElementById('ac_rc').value.trim();
+    const msg=document.getElementById('ac_rcMsg'); msg.className='msg';
+    if(!pw||!nc){ msg.textContent='Fill in both fields.'; msg.className='msg err'; return; }
+    if(nc.length<6){ msg.textContent='Recovery code must be at least 6 characters.'; msg.className='msg err'; return; }
+    const { ok, data } = await auth({ action:'change-recovery', password:pw, newRecovery:nc });
+    if(ok){ msg.textContent='✓ Recovery code updated. Store it somewhere safe.'; msg.className='msg ok';
+      document.getElementById('ac_rcpw').value=''; document.getElementById('ac_rc').value=''; }
+    else { msg.textContent=data.error||'Could not update.'; msg.className='msg err'; }
+  }
+
+  // ---------- LOAD ----------
+  async function loadCatalog(){
+    try{
+      const res = await fetch(API_GET, { cache:'no-store' });
+      const data = await res.json();
+      products = Array.isArray(data.products) ? data.products : [];
+      bios = (data.bios && typeof data.bios==='object') ? data.bios : {};
+      products.forEach(ensureSizes);
+    }catch(e){
+      products = []; bios = {};
+    }
+    render();
+  }
+
+  // ---------- RENDER ----------
+  function esc(s){ return String(s==null?'':s).replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function render(){
+    const list = document.getElementById('list');
+    document.getElementById('count').textContent = products.length + ' products';
+    list.innerHTML = products.map((p, i) => {
+      const bio = bios[p.name] || '';
+      const opts = STATUSES.map(([v,l]) => `<option value="${v}" ${p.status===v?'selected':''}>${l}</option>`).join('');
+      const sizes = ensureSizes(p);
+      const sizeRows = sizes.map((s, si) => `
+        <div class="sizerow">
+          <input class="s-label" value="${esc(s.label)}" oninput="updSize(${i},${si},'label',this.value)" placeholder="e.g. 10mg">
+          <div class="s-price"><span>$</span><input type="number" step="0.01" min="0" value="${esc(s.price)}" oninput="updSize(${i},${si},'price',this.value)" placeholder="0.00"></div>
+          <button class="danger xbtn" title="Remove size" onclick="removeSize(${i},${si})">✕</button>
+        </div>`).join('');
+      return `
+      <div class="card ${p.status==='restock'?'out':''}" data-i="${i}">
+        <div class="cardhead">
+          <span class="idx">#${i+1}</span>
+          <button class="danger" onclick="removeProduct(${i})">Delete</button>
+        </div>
+        <div class="grid3">
+          <div><label>Product name</label><input value="${esc(p.name)}" oninput="upd(${i},'name',this.value)"></div>
+          <div><label>Category</label><input value="${esc(p.cat)}" oninput="upd(${i},'cat',this.value)" list="cats"></div>
+          <div><label>Status</label><select onchange="upd(${i},'status',this.value)">${opts}</select></div>
+        </div>
+        <div class="sizes">
+          <label>Vial sizes &amp; prices</label>
+          <div class="sizelist">${sizeRows}</div>
+          <button class="addsize" onclick="addSize(${i})">+ Add another size</button>
+          <div class="hint">Each size is a separate option the customer picks. Add a 2nd, 3rd… size to offer choices (e.g. 5mg / 10mg).</div>
+        </div>
+        <div class="grid2">
+          <div><label>Purity / description line</label><input value="${esc(p.spec)}" oninput="upd(${i},'spec',this.value)" placeholder="≥99% HPLC"></div>
+          <div><label>Lot number</label><input value="${esc(p.lot)}" oninput="upd(${i},'lot',this.value)" placeholder="SMG-XXX-01"></div>
+          <div><label>Image file</label><input value="${esc(p.img)}" oninput="upd(${i},'img',this.value)" placeholder="tirzepatide"><div class="hint">File name in /images without .png. Blank = branded vial.</div></div>
+        </div>
+        <div class="full">
+          <label>Description (optional)</label>
+          <textarea rows="2" oninput="updBio(${i},this.value)" placeholder="Research description shown on the product card…">${esc(bio)}</textarea>
+        </div>
+      </div>`;
+    }).join('');
+    // datalist of categories for quick reuse
+    if(!document.getElementById('cats')){
+      const dl = document.createElement('datalist'); dl.id='cats'; document.body.appendChild(dl);
+    }
+    const cats = [...new Set(products.map(p=>p.cat).filter(Boolean))];
+    document.getElementById('cats').innerHTML = cats.map(c=>`<option value="${esc(c)}">`).join('');
+  }
+
+  // ---------- EDIT STATE ----------
+  function upd(i, field, val){
+    if(field==='name'){
+      // keep the bio keyed to the (possibly new) name
+      const oldName = products[i].name;
+      if(bios[oldName] !== undefined && val !== oldName){
+        bios[val] = bios[oldName]; delete bios[oldName];
+      }
+    }
+    products[i][field] = val;
+    if(field==='status'){ // reflect the dimmed "out" style live
+      const card = document.querySelector(`.card[data-i="${i}"]`);
+      if(card) card.classList.toggle('out', val==='restock');
+    }
+  }
+  function updBio(i, val){ bios[products[i].name] = val; }
+
+  // ---------- SIZES ----------
+  function ensureSizes(p){
+    if(!Array.isArray(p.sizes) || !p.sizes.length){
+      p.sizes = [{ label:'', price: (parseFloat(p.price)||0) }];
+    }
+    return p.sizes;
+  }
+  function updSize(i, si, field, val){
+    const s = products[i].sizes[si]; if(!s) return;
+    s[field] = val;
+  }
+  function addSize(i){
+    ensureSizes(products[i]);
+    products[i].sizes.push({ label:'', price:0 });
+    render();
+  }
+  function removeSize(i, si){
+    if(products[i].sizes.length <= 1){ alert('Each product needs at least one size.'); return; }
+    products[i].sizes.splice(si, 1);
+    render();
+  }
+
+  function addProduct(){
+    const maxId = products.reduce((m,p)=>Math.max(m, parseInt(p.id,10)||0), 0);
+    products.unshift({ id:maxId+1, cat:'', name:'New Product', spec:'', status:'stock', lot:'', img:'', sizes:[{label:'',price:0}] });
+    render();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  function removeProduct(i){
+    if(!confirm('Delete "'+(products[i].name||'this product')+'"?')) return;
+    const name = products[i].name;
+    products.splice(i,1);
+    // if no other product uses that bio name, drop it
+    if(!products.some(p=>p.name===name)) delete bios[name];
+    render();
+  }
+
+  // ---------- SAVE ----------
+  async function saveAll(){
+    const btn = document.getElementById('saveBtn');
+    const msg = document.getElementById('saveMsg');
+    msg.className='msg';
+    // trim empty-named products
+    const clean = products.filter(p => (p.name||'').trim());
+    // keep only bios that match a product name
+    const names = new Set(clean.map(p=>p.name));
+    const bioOut = {};
+    Object.keys(bios).forEach(k=>{ if(names.has(k) && (bios[k]||'').trim()) bioOut[k]=bios[k]; });
+
+    btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Saving';
+    try{
+      const res = await fetch(API_SAVE, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ password: PASSWORD, products: clean, bios: bioOut })
+      });
+      const data = await res.json().catch(()=>({}));
+      if(res.ok && data.success){
+        msg.textContent = '✓ Saved '+data.count+' products. Your store is updating now.'; msg.className='msg ok';
+      }else{
+        msg.textContent = data.error || 'Save failed.'; msg.className='msg err';
+      }
+    }catch(e){
+      msg.textContent='Could not reach the server.'; msg.className='msg err';
+    }finally{
+      btn.disabled=false; btn.textContent='Save all changes';
+      setTimeout(()=>{ msg.className='msg'; }, 6000);
+    }
+  }
+</script>
+</body>
+</html>
