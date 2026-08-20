@@ -278,7 +278,6 @@
       "status": "stock",
       "lot": "SMG-BAC-01",
       "img": "bac-water",
-      "imgFrame": true,
       "sizes": [
         {
           "label": "30mL",
@@ -541,6 +540,37 @@
           "price": 11.99
         }
       ]
+    },
+    {
+      "id": 37,
+      "cat": "Metabolic",
+      "name": "MIC + B12",
+      "spec": "Lipotropic & Metabolic Blend · ≥99% HPLC",
+      "status": "stock",
+      "lot": "SMG-MIC-01",
+      "img": "mic-b12",
+      "sizes": [
+        {
+          "label": "10mL",
+          "price": 44.99
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "cat": "Supplies",
+      "name": "Hospira Water",
+      "spec": "Bacteriostatic Water · Multi-dose USP",
+      "status": "stock",
+      "lot": "SMG-HOS-01",
+      "img": "hospira-water",
+      "imgFrame": true,
+      "sizes": [
+        {
+          "label": "30mL",
+          "price": 24.99
+        }
+      ]
     }
   ],
   "bios": {
@@ -579,6 +609,8 @@
     "Acetic Acid Water": "Dilute acetic acid solution used as a reconstitution diluent for peptides with poor solubility in bacteriostatic water. Supports laboratory preparation under sterile technique.",
     "Sharps Container": "A puncture-resistant biohazard container for the safe disposal of used needles and syringes in a research setting. Supports secure, compliant sharps handling.",
     "Research Kit": "An all-in-one research starter kit — includes a puncture-resistant sharps container, a research solution vial, insulin syringes, and 70% isopropyl alcohol prep pads. Everything needed for clean, compliant laboratory handling.",
-    "PBS": "Phosphate Buffered Saline (1×, pH 7.4) — a sterile, isotonic buffer widely used as a diluent and wash solution in laboratory research. Endotoxin level < 0.5 EU/mL."
+    "PBS": "Phosphate Buffered Saline (1×, pH 7.4) — a sterile, isotonic buffer widely used as a diluent and wash solution in laboratory research. Endotoxin level < 0.5 EU/mL.",
+    "MIC + B12": "A lipotropic research blend combining Methionine, Inositol, Choline (MIC) with Vitamin B12 (Cobalamin). Studied in laboratory settings for its role in metabolic signaling, lipid-metabolism pathways, methylation, and cellular energy processes.",
+    "Hospira Water": "Hospira 30mL multi-dose bacteriostatic water (0.9% benzyl alcohol) for injection, USP — a sterile diluent used to reconstitute lyophilized research compounds under sterile technique."
   }
 }
