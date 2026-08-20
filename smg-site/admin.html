@@ -1,485 +1,1189 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>SMG Admin — Manage Products</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SMG Performance Labs — Research Peptides</title>
+<meta name="description" content="SMG Performance Labs — research-grade peptides, verified every batch. HPLC and mass-spectrometry confirmed, each vial ships with a batch-specific Certificate of Analysis. For in-vitro laboratory research use only." />
+<meta name="robots" content="index, follow" />
+<!-- Update this URL to your real domain when you connect one -->
+<link rel="canonical" href="https://snazzy-gecko-46df61.netlify.app/" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="SMG Performance Labs — Research Peptides" />
+<meta property="og:description" content="Research-grade peptides, verified every batch. Batch-specific COA with every order. Research use only." />
+<meta property="og:url" content="https://snazzy-gecko-46df61.netlify.app/" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 <style>
-  :root{
-    --bg:#0d0f0b; --panel:#151a10; --panel2:#1b2114; --line:#2a3320;
-    --text:#e8ede0; --muted:#8b9680; --lime:#a3e635; --amber:#f59e0b; --red:#ef4444;
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --void:      #0A0C0A;
+    --panel:     #12160F;
+    --panel-2:   #171C13;
+    --line:      #2A3320;
+    --lime:      #A3E635;
+    --lime-deep: #84CC16;
+    --lime-glow: rgba(163,230,53,0.14);
+    --silver:    #C8CDD2;
+    --text:      #E8EDE4;
+    --muted:     #8B9680;
+    --muted-2:   #5A6B4A;
+    --amber:     #F5A524;
+    --white:     #FFFFFF;
   }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.5}
-  a{color:var(--lime)}
-  .wrap{max-width:1000px;margin:0 auto;padding:24px 16px 80px}
-  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px;border-bottom:1px solid var(--line);padding-bottom:16px}
-  h1{font-size:20px;margin:0;letter-spacing:.5px}
-  h1 span{color:var(--lime)}
-  .sub{color:var(--muted);font-size:13px;margin:2px 0 0}
-  button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:9px 14px;transition:.15s}
-  button:hover{border-color:var(--lime)}
-  button.primary{background:var(--lime);color:#0d0f0b;border-color:var(--lime);font-weight:700}
-  button.primary:hover{filter:brightness(1.08)}
-  button.danger{color:var(--red);border-color:#3a2020}
-  button.danger:hover{border-color:var(--red)}
-  input,select,textarea{width:100%;font:inherit;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px 10px}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--lime)}
-  label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:0 0 4px}
 
-  /* Login + Reset */
-  #login,#reset{max-width:380px;margin:12vh auto 0;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px}
-  #login h1,#reset h1{margin-bottom:6px}
-  #login .row,#reset .row{margin-top:16px}
-  .msg{font-size:13px;margin-top:12px;display:none}
-  .msg.err{color:var(--red);display:block}
-  .msg.ok{color:var(--lime);display:block}
+  html { scroll-behavior: smooth; }
 
-  /* Account modal */
-  .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:6vh 16px;overflow:auto}
-  .modal-ov.open{display:flex}
-  .modal{width:100%;max-width:440px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px}
-  .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-  .modal-head h2{margin:0;font-size:18px}
-  .acct-sec{border-top:1px solid var(--line);padding-top:16px;margin-top:16px}
-  .acct-sec h3{margin:0 0 4px;font-size:14px}
-  .acct-sec label{margin-top:12px}
-  .acct-sec input{margin-top:4px}
-  .acct-sec .primary{margin-top:14px}
-  .acct-sec select{margin-top:4px}
-  .pay-status{font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin:6px 0 4px}
-  .pay-status code{background:var(--panel2);padding:1px 5px;border-radius:4px}
+  body {
+    background: var(--void);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
 
-  /* Editor */
-  #editor{display:none}
-  .toolbar{position:sticky;top:0;z-index:5;background:rgba(13,15,11,.92);backdrop-filter:blur(6px);display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 0;margin-bottom:8px;border-bottom:1px solid var(--line)}
-  .toolbar .grow{flex:1}
-  .count{color:var(--muted);font-size:13px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
-  .card.out{opacity:.55}
-  .grid{display:grid;grid-template-columns:2fr 1.4fr 1fr 1fr;gap:12px}
-  .grid3{display:grid;grid-template-columns:2fr 1.4fr 1fr;gap:12px}
-  .grid2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px}
-  /* sizes editor */
-  .sizes{margin-top:14px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
-  .sizelist{display:flex;flex-direction:column;gap:8px;margin:6px 0 10px}
-  .sizerow{display:grid;grid-template-columns:1fr 150px 40px;gap:8px;align-items:center}
-  .s-price{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding-left:10px}
-  .s-price span{color:var(--muted)}
-  .s-price input{border:none;background:transparent;padding-left:4px}
-  .s-price input:focus{outline:none}
-  .xbtn{padding:8px 0;width:40px;text-align:center}
-  .addsize{background:transparent;border:1px dashed var(--line);color:var(--lime);padding:7px 12px;font-size:13px}
-  .addsize:hover{border-color:var(--lime)}
-  @media(max-width:720px){.grid3{grid-template-columns:1fr 1fr}.sizerow{grid-template-columns:1fr 120px 40px}}
-  .cardhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-  .cardhead .idx{font-size:12px;color:var(--muted)}
-  .full{margin-top:12px}
-  .hint{font-size:11px;color:var(--muted);margin-top:4px}
-  @media(max-width:720px){.grid{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
-  .savebar{position:fixed;left:0;right:0;bottom:0;background:rgba(13,15,11,.96);border-top:1px solid var(--line);padding:12px 16px;display:flex;justify-content:center;gap:12px;align-items:center}
-  .savebar .inner{width:100%;max-width:1000px;display:flex;gap:12px;align-items:center}
-  .spinner{display:inline-block;width:14px;height:14px;border:2px solid #0d0f0b;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px}
-  @keyframes spin{to{transform:rotate(360deg)}}
+  ::selection { background: var(--lime); color: var(--void); }
+
+  h1,h2,h3,h4 { font-family: 'Chakra Petch', sans-serif; font-weight: 700; line-height: 1.05; letter-spacing: -0.01em; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 28px; }
+
+  /* hexagon lime chip used near section labels */
+  .hex {
+    display: inline-block; width: 9px; height: 10px;
+    background: var(--lime);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    vertical-align: middle;
+  }
+
+  .eyebrow {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--lime);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  /* ─────────── ANNOUNCEMENT MARQUEE ─────────── */
+  .announce {
+    background: var(--lime);
+    color: var(--void);
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 600; font-size: 12.5px;
+    letter-spacing: 0.04em;
+    overflow: hidden; white-space: nowrap;
+    padding: 7px 0;
+    position: relative;
+  }
+  .announce-track { display: inline-block; animation: marquee 28s linear infinite; }
+  .announce-track span { padding: 0 26px; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ─────────── HEADER ─────────── */
+  header {
+    position: sticky; top: 0; z-index: 90;
+    background: rgba(10,12,10,0.72);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid transparent;
+    transition: border-color .3s, background .3s;
+  }
+  header.scrolled { border-bottom-color: var(--line); background: rgba(10,12,10,0.92); }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 74px; }
+
+  .brand { display: flex; align-items: baseline; gap: 2px; font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 25px; letter-spacing: -0.02em; }
+  .brand .s { color: var(--text); }
+  .brand .m { color: var(--lime); }
+  .brand .g { color: var(--silver); }
+  .brand small { font-size: 10px; font-weight: 600; letter-spacing: 0.22em; color: var(--muted); margin-left: 9px; align-self: center; text-transform: uppercase; }
+
+  .nav-links { display: flex; gap: 34px; }
+  .nav-links a {
+    font-family: 'Chakra Petch', sans-serif; font-size: 14px; font-weight: 500;
+    color: var(--muted); letter-spacing: 0.02em; transition: color .2s; position: relative;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a::after { content:''; position:absolute; left:0; bottom:-6px; width:0; height:2px; background: var(--lime); transition: width .25s; }
+  .nav-links a:hover::after { width: 100%; }
+
+  .cart-toggle {
+    display: flex; align-items: center; gap: 9px;
+    border: 1px solid var(--line); border-radius: 2px;
+    padding: 9px 16px; font-family:'Chakra Petch',sans-serif; font-weight:600; font-size:13px;
+    letter-spacing: 0.05em; transition: border-color .2s, background .2s;
+  }
+  .cart-toggle:hover { border-color: var(--lime); background: var(--lime-glow); }
+  .cart-badge {
+    background: var(--lime); color: var(--void); font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size: 11px; min-width: 20px; height: 20px; border-radius: 2px;
+    display:flex; align-items:center; justify-content:center; padding: 0 5px;
+    transition: transform .2s;
+  }
+  .cart-badge.bump { transform: scale(1.35); }
+
+  /* ─────────── HERO ─────────── */
+  .hero { position: relative; padding: 96px 0 80px; overflow: hidden; }
+  .hero-hex-field {
+    position: absolute; inset: 0; z-index: 0; opacity: 0.5;
+    background-image:
+      radial-gradient(circle at 82% 18%, rgba(163,230,53,0.10), transparent 42%),
+      radial-gradient(circle at 12% 88%, rgba(163,230,53,0.05), transparent 38%);
+  }
+  .hero-hex-field svg { position:absolute; top:-40px; right:-60px; width: 620px; height: 620px; opacity: 0.14; }
+  .hero-inner { position: relative; z-index: 1; max-width: 820px; }
+
+  .hero h1 {
+    font-size: clamp(2.7rem, 6.4vw, 5rem);
+    text-transform: uppercase;
+    margin: 22px 0 20px;
+  }
+  .hero h1 .lime { color: var(--lime); }
+  .hero h1 .outline {
+    color: transparent; -webkit-text-stroke: 1.4px var(--muted-2);
+  }
+  .hero p.lead { font-size: 1.12rem; color: var(--muted); max-width: 560px; margin-bottom: 34px; }
+
+  .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--lime); color: var(--void);
+    font-family:'Chakra Petch',sans-serif; font-weight: 700; font-size: 14px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 15px 28px; border-radius: 2px;
+    transition: transform .12s, box-shadow .25s;
+    box-shadow: 0 0 0 rgba(163,230,53,0);
+  }
+  .btn-primary:hover { box-shadow: 0 8px 30px var(--lime-glow); transform: translateY(-2px); }
+  .btn-ghost {
+    border: 1px solid var(--line); color: var(--text);
+    font-family:'Chakra Petch',sans-serif; font-weight:600; font-size:14px;
+    letter-spacing:0.06em; text-transform: uppercase;
+    padding: 15px 28px; border-radius: 2px; transition: border-color .2s, color .2s;
+  }
+  .btn-ghost:hover { border-color: var(--lime); color: var(--lime); }
+
+  /* hero ticker */
+  .hero-ticker {
+    margin-top: 60px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    overflow: hidden; white-space: nowrap; padding: 16px 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .hero-ticker-track { display:inline-block; animation: marquee 40s linear infinite; }
+  .hero-ticker-track span {
+    font-family:'Chakra Petch',sans-serif; font-weight:600; font-size: 14px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 0 22px;
+  }
+  .hero-ticker-track .dot { color: var(--lime); }
+
+  /* stat strip */
+  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 60px; }
+  .stat { background: var(--panel); padding: 26px 24px; }
+  .stat .num { font-family:'Chakra Petch',sans-serif; font-weight:700; font-size: 2.1rem; color: var(--lime); line-height:1; }
+  .stat .lab { font-size: 12px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 8px; }
+
+  /* ─────────── SECTION SHELL ─────────── */
+  section.block { padding: 92px 0; position: relative; }
+  .sec-head { margin-bottom: 46px; max-width: 620px; }
+  .sec-head h2 { font-size: clamp(2rem, 4vw, 2.9rem); text-transform: uppercase; margin: 16px 0 12px; }
+  .sec-head p { color: var(--muted); font-size: 1.02rem; }
+
+  /* ─────────── FILTER TABS ─────────── */
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 34px; }
+  .filter {
+    font-family:'Chakra Petch',sans-serif; font-weight:600; font-size: 12.5px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 9px 16px; border: 1px solid var(--line); border-radius: 2px;
+    color: var(--muted); transition: all .2s;
+  }
+  .filter:hover { color: var(--text); border-color: var(--muted-2); }
+  .filter.active { background: var(--lime); border-color: var(--lime); color: var(--void); }
+
+  /* ─────────── PRODUCT GRID ─────────── */
+  .grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+
+  .card {
+    position: relative; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 3px;
+    padding: 22px; overflow: hidden;
+    transition: border-color .25s, transform .25s, box-shadow .25s;
+  }
+  .card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background: linear-gradient(90deg, transparent, var(--lime), transparent);
+    opacity: 0; transition: opacity .3s;
+  }
+  .card:hover { border-color: rgba(163,230,53,0.4); transform: translateY(-4px); box-shadow: 0 18px 44px rgba(0,0,0,0.5); }
+  .card:hover::before { opacity: 1; }
+
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+  .lot { font-family:'JetBrains Mono',monospace; font-size: 11px; color: var(--muted-2); letter-spacing: 0.04em; }
+  .badge {
+    font-family:'Chakra Petch',sans-serif; font-weight: 700; font-size: 9.5px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 8px; border-radius: 2px;
+  }
+  .badge.stock    { background: rgba(163,230,53,0.14); color: var(--lime); border:1px solid rgba(163,230,53,0.3); }
+  .badge.feat     { background: var(--lime); color: var(--void); }
+  .badge.restock  { background: rgba(245,165,36,0.12); color: var(--amber); border:1px solid rgba(245,165,36,0.3); }
+
+  /* vial visual */
+  .vial {
+    height: 230px; margin: 4px 0 18px;
+    /* Dark tile — product photos have transparent backgrounds so they float on the theme */
+    background:
+      radial-gradient(ellipse at 50% 45%, rgba(163,230,53,0.08), transparent 68%),
+      var(--panel-2);
+    border: 1px solid var(--line); border-radius: 3px;
+    display: flex; align-items: center; justify-content: center; position: relative;
+    overflow: hidden;
+  }
+  .vial svg.bottle { height: 190px; width: auto; opacity: 1; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.5)); }
+  .vial-photo { height: 210px; width: auto; object-fit: contain; mix-blend-mode: normal; filter: drop-shadow(0 10px 18px rgba(0,0,0,0.55)); }
+  /* clear-glass product photos (e.g. Hospira water, PBS) sit on a clean white card */
+  .vial-photo.framed { height: 190px; background: #fff; padding: 10px 16px; border-radius: 10px; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.45)); }
+  .vial .cat-tag {
+    position: absolute; bottom: 10px; left: 10px; z-index: 2;
+    font-family:'JetBrains Mono',monospace; font-size: 10px; color: var(--muted);
+    letter-spacing: 0.04em;
+    background: rgba(10,12,10,0.6); padding: 2px 6px; border-radius: 2px;
+  }
+
+  .card h3 { font-size: 1.35rem; text-transform: uppercase; margin-bottom: 6px; }
+  .spec { font-family:'JetBrains Mono',monospace; font-size: 11.5px; color: var(--muted); margin-bottom: 12px; }
+  .bio { font-size: 12.5px; line-height: 1.55; color: var(--muted); margin-bottom: 18px;
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .size-row { display: flex; align-items: center; gap: 8px; margin: 0 0 14px; }
+  .size-lbl { font-family:'JetBrains Mono',monospace; font-size: 10px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); }
+  .size-sel { flex: 1; background: var(--bg,#0d0f0b); color: var(--text,#e8ede0); border: 1px solid var(--line,#2a3320);
+    border-radius: 8px; padding: 8px 10px; font-family:'JetBrains Mono',monospace; font-size: 12px; cursor: pointer; }
+  .size-sel:focus { outline: none; border-color: var(--lime,#a3e635); }
+  .size-single { font-family:'JetBrains Mono',monospace; font-size: 11px; color: var(--muted); border: 1px solid var(--line,#2a3320);
+    border-radius: 6px; padding: 3px 8px; }
+  .card-foot { display: flex; align-items: center; justify-content: space-between; }
+  .price { font-family:'Chakra Petch',sans-serif; font-weight: 700; font-size: 1.5rem; }
+  .price span { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+
+  .add {
+    background: transparent; border: 1px solid var(--lime); color: var(--lime);
+    font-family:'Chakra Petch',sans-serif; font-weight: 700; font-size: 12px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 10px 18px; border-radius: 2px; transition: all .18s;
+  }
+  .add:hover { background: var(--lime); color: var(--void); }
+  .add:active { transform: scale(0.95); }
+  .notify { border-color: var(--muted-2); color: var(--muted); }
+  .notify:hover { background: var(--muted-2); color: var(--void); }
+
+  /* ─────────── PILLARS ─────────── */
+  .pillars { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+  .pillar { background: var(--panel); border: 1px solid var(--line); border-radius: 3px; padding: 30px; }
+  .pillar .pnum { font-family:'JetBrains Mono',monospace; font-size: 12px; color: var(--lime); letter-spacing: 0.1em; }
+  .pillar h3 { font-size: 1.3rem; text-transform: uppercase; margin: 14px 0 10px; }
+  .pillar p { color: var(--muted); font-size: 0.95rem; margin-bottom: 20px; }
+  .pillar .pstat { font-family:'Chakra Petch',sans-serif; font-weight:700; font-size: 1.8rem; color: var(--text); }
+  .pillar .pstat small { display:block; font-size:11px; color: var(--muted); letter-spacing:0.08em; text-transform:uppercase; font-weight:500; margin-top:2px; }
+
+  /* ─────────── PROCESS TIMELINE ─────────── */
+  .chain { display: grid; grid-template-columns: repeat(5,1fr); gap: 0; margin-top: 12px; }
+  .step { position: relative; padding: 0 18px; }
+  .step:not(:last-child)::after {
+    content:''; position:absolute; top: 17px; right: -2px; width: calc(100% - 34px); height: 1px;
+    background: linear-gradient(90deg, var(--lime), var(--line));
+  }
+  .step .snum {
+    width: 34px; height: 38px; display:flex; align-items:center; justify-content:center;
+    background: var(--panel); border: 1px solid var(--lime); color: var(--lime);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size: 13px; margin-bottom: 18px;
+  }
+  .step h4 { font-size: 1.05rem; text-transform: uppercase; margin-bottom: 6px; }
+  .step p { color: var(--muted); font-size: 0.85rem; }
+
+  /* ─────────── COA ─────────── */
+  .coa-row { display: grid; grid-template-columns: 1fr 1.1fr; gap: 44px; align-items: center; }
+  .coa-cert {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 4px; overflow: hidden;
+  }
+  .coa-cert .ch {
+    background: var(--panel-2); border-bottom: 1px solid var(--line);
+    padding: 16px 20px; display:flex; justify-content:space-between; align-items:center;
+  }
+  .coa-cert .ch b { font-family:'Chakra Petch',sans-serif; font-size: 1rem; letter-spacing: 0.04em; text-transform: uppercase; }
+  .coa-cert .ch .verif { font-family:'Chakra Petch',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.1em; color: var(--lime); border:1px solid rgba(163,230,53,0.35); padding:4px 9px; border-radius:2px; text-transform:uppercase; }
+  .coa-cert table { width: 100%; border-collapse: collapse; }
+  .coa-cert td { padding: 12px 20px; border-bottom: 1px solid var(--line); font-family:'JetBrains Mono',monospace; font-size: 12.5px; }
+  .coa-cert td:first-child { color: var(--muted); }
+  .coa-cert td:last-child { text-align: right; color: var(--text); }
+  .coa-cert tr:last-child td { border-bottom: none; }
+  .coa-cert .pass { color: var(--lime) !important; }
+
+  /* ─────────── FAQ ─────────── */
+  .faq-item { border-bottom: 1px solid var(--line); }
+  .faq-q {
+    width: 100%; text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 20px;
+    padding: 24px 0; font-family:'Chakra Petch',sans-serif; font-weight: 600; font-size: 1.1rem; color: var(--text);
+    transition: color .2s;
+  }
+  .faq-q:hover { color: var(--lime); }
+  .faq-q .ic { font-family:'JetBrains Mono',monospace; color: var(--lime); font-size: 1.4rem; transition: transform .3s; flex-shrink: 0; }
+  .faq-item.open .faq-q .ic { transform: rotate(45deg); }
+  .faq-a { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
+  .faq-a p { color: var(--muted); padding: 0 0 24px; max-width: 760px; font-size: 0.97rem; }
+
+  /* ─────────── NEWSLETTER ─────────── */
+  .alerts { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 54px; text-align: center; position: relative; overflow: hidden; }
+  .alerts::before { content:''; position:absolute; top:-1px; left:50%; transform:translateX(-50%); width: 240px; height:2px; background: linear-gradient(90deg,transparent,var(--lime),transparent); }
+  .alerts h2 { font-size: 2.2rem; text-transform: uppercase; margin-bottom: 10px; }
+  .alerts p { color: var(--muted); margin-bottom: 26px; }
+  .alerts .field { display: flex; gap: 10px; max-width: 460px; margin: 0 auto; }
+  .alerts input {
+    flex: 1; background: var(--void); border: 1px solid var(--line); border-radius: 2px;
+    padding: 13px 16px; color: var(--text); font-family:'Inter',sans-serif; font-size: 14px; outline: none; transition: border-color .2s;
+  }
+  .alerts input:focus { border-color: var(--lime); }
+
+  /* ─────────── FOOTER ─────────── */
+  footer { border-top: 1px solid var(--line); padding: 64px 0 34px; }
+  .foot-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+  .foot-brand p { color: var(--muted); font-size: 0.9rem; max-width: 280px; margin-top: 16px; }
+  .foot-col h5 { font-family:'Chakra Petch',sans-serif; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--lime); margin-bottom: 16px; }
+  .foot-col a { display: block; color: var(--muted); font-size: 0.9rem; padding: 5px 0; transition: color .2s; }
+  .foot-col a:hover { color: var(--text); }
+  .foot-legal { border-top: 1px solid var(--line); padding-top: 26px; display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .foot-legal p { color: var(--muted-2); font-size: 12px; max-width: 640px; line-height: 1.6; }
+  .foot-legal .cr { color: var(--muted); font-family:'JetBrains Mono',monospace; font-size: 11px; }
+
+  /* ─────────── CART DRAWER ─────────── */
+  .overlay { position: fixed; inset: 0; background: rgba(5,7,5,0.7); z-index: 200; opacity: 0; pointer-events: none; transition: opacity .3s; backdrop-filter: blur(2px); }
+  .overlay.open { opacity: 1; pointer-events: all; }
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: min(430px, 100vw); z-index: 201;
+    background: var(--panel); border-left: 1px solid var(--line);
+    display: flex; flex-direction: column; transform: translateX(100%);
+    transition: transform .35s cubic-bezier(.4,0,.2,1);
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-h { padding: 22px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+  .drawer-h h3 { font-size: 1.2rem; text-transform: uppercase; }
+  .x { font-size: 1.5rem; color: var(--muted); line-height: 1; transition: color .2s; }
+  .x:hover { color: var(--lime); }
+  .drawer-items { flex: 1; overflow-y: auto; padding: 12px 24px; }
+  .empty { text-align: center; color: var(--muted); padding: 60px 0; }
+  .empty .hexbig { width: 46px; height: 52px; background: var(--line); margin: 0 auto 16px; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+  .ci { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--line); align-items: center; }
+  .ci-icon { width: 42px; height: 42px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 2px; display:flex; align-items:center; justify-content:center; flex-shrink: 0; }
+  .ci-icon svg { width: 20px; height: 20px; }
+  .ci-info { flex: 1; }
+  .ci-name { font-family:'Chakra Petch',sans-serif; font-weight: 600; font-size: 14px; }
+  .ci-price { font-family:'JetBrains Mono',monospace; font-size: 12px; color: var(--muted); }
+  .ci-ctrl { display: flex; align-items: center; gap: 7px; }
+  .q { width: 26px; height: 26px; border: 1px solid var(--line); border-radius: 2px; font-size: 15px; color: var(--text); display:flex; align-items:center; justify-content:center; transition: all .15s; }
+  .q:hover { border-color: var(--lime); color: var(--lime); }
+  .qn { font-family:'JetBrains Mono',monospace; font-size: 13px; min-width: 20px; text-align: center; }
+  .rm { color: var(--muted-2); font-size: 15px; padding: 2px 4px; transition: color .15s; }
+  .rm:hover { color: var(--amber); }
+  .drawer-f { padding: 22px 24px; border-top: 1px solid var(--line); }
+  .drawer-total { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .drawer-total .tl { font-family:'Chakra Petch',sans-serif; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .drawer-total .tv { font-family:'Chakra Petch',sans-serif; font-weight: 700; font-size: 1.5rem; color: var(--lime); }
+  .ship-note { font-size: 11px; color: var(--muted); margin-bottom: 18px; font-family:'JetBrains Mono',monospace; }
+  .checkout { width: 100%; background: var(--lime); color: var(--void); font-family:'Chakra Petch',sans-serif; font-weight:700; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; padding: 15px; border-radius: 2px; transition: opacity .2s; }
+  .checkout:hover { opacity: .9; }
+  .checkout:disabled { background: var(--line); color: var(--muted-2); cursor: not-allowed; }
+
+  /* ─────────── CHECKOUT MODAL ─────────── */
+  .modal-ov { position: fixed; inset: 0; background: rgba(5,7,5,0.82); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .3s; backdrop-filter: blur(4px); }
+  .modal-ov.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--panel); border: 1px solid var(--line); border-radius: 5px; width: 100%; max-width: 470px; padding: 38px 34px; transform: translateY(16px) scale(.98); transition: transform .3s; position: relative; }
+  .modal::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg,transparent,var(--lime),transparent); }
+  .modal-ov.open .modal { transform: translateY(0) scale(1); }
+  .modal h2 { font-size: 1.6rem; text-transform: uppercase; margin-bottom: 6px; }
+  .modal .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 26px; }
+  .fr { margin-bottom: 16px; }
+  .fr label { display: block; font-family:'Chakra Petch',sans-serif; font-size: 12px; font-weight:600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+  .fr input { width: 100%; background: var(--void); border: 1px solid var(--line); border-radius: 2px; padding: 12px 14px; color: var(--text); font-family:'Inter',sans-serif; font-size: 14px; outline: none; transition: border-color .2s; }
+  .fr input:focus { border-color: var(--lime); }
+  .fr input.bad { border-color: var(--amber); }
+  .fulfill { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .ff-opt { display: flex; flex-direction: column; gap: 3px; align-items: flex-start; text-align: left; background: var(--void); border: 1px solid var(--line); border-radius: 3px; padding: 11px 13px; cursor: pointer; transition: all .15s; }
+  .ff-opt:hover { border-color: var(--muted-2); }
+  .ff-opt.active { border-color: var(--lime); background: var(--lime-glow); }
+  .ff-title { font-family:'Chakra Petch',sans-serif; font-weight:600; font-size: 13px; color: var(--text); }
+  .ff-sub { font-family:'JetBrains Mono',monospace; font-size: 11px; color: var(--muted); }
+  .ff-opt.active .ff-sub { color: var(--lime); }
+  .ff-note { font-size: 11.5px; color: var(--muted); margin-top: 8px; }
+  .ff-note strong { color: var(--text); }
+  .osum { background: var(--void); border: 1px solid var(--line); border-radius: 3px; padding: 16px; margin: 22px 0; }
+  .osum .ot { font-family:'Chakra Petch',sans-serif; font-size: 11px; font-weight:600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .osum .oi { display: flex; justify-content: space-between; font-family:'JetBrains Mono',monospace; font-size: 12.5px; padding: 4px 0; }
+  .osum hr { border: none; border-top: 1px solid var(--line); margin: 12px 0; }
+  .osum .otot { display: flex; justify-content: space-between; font-family:'Chakra Petch',sans-serif; font-weight: 700; font-size: 1.05rem; }
+  .osum .otot .lime { color: var(--lime); }
+  .m-actions { display: flex; gap: 10px; }
+  .m-cancel { flex: 1; border: 1px solid var(--line); border-radius: 2px; padding: 13px; font-family:'Chakra Petch',sans-serif; font-weight:600; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); transition: all .2s; }
+  .m-cancel:hover { border-color: var(--text); color: var(--text); }
+  .m-send { flex: 2; background: var(--lime); color: var(--void); border-radius: 2px; padding: 13px; font-family:'Chakra Petch',sans-serif; font-weight:700; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; display:flex; align-items:center; justify-content:center; gap: 8px; transition: opacity .2s; }
+  .m-send:hover { opacity: .9; }
+  .m-send:disabled { opacity: .5; cursor: not-allowed; }
+  .spinner { width: 15px; height: 15px; border: 2px solid rgba(10,12,10,.35); border-top-color: var(--void); border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .err { color: var(--amber); font-size: 13px; margin-top: 14px; display: none; }
+
+  .success { text-align: center; padding: 10px 0; }
+  .success .schex { width: 66px; height: 74px; margin: 0 auto 20px; background: var(--lime-glow); border: 1px solid var(--lime); clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); display:flex; align-items:center; justify-content:center; }
+  .success .schex svg { width: 30px; height: 30px; }
+  .success h2 { font-size: 1.5rem; text-transform: uppercase; margin-bottom: 10px; }
+  .success p { color: var(--muted); font-size: 0.95rem; }
+  .success .em { color: var(--lime); font-family:'JetBrains Mono',monospace; }
+  .btn-done { margin-top: 24px; background: var(--lime); color: var(--void); font-family:'Chakra Petch',sans-serif; font-weight:700; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; padding: 13px 34px; border-radius: 2px; }
+
+  /* ─────────── AGE GATE ─────────── */
+  .agegate { position: fixed; inset: 0; background: var(--void); z-index: 400; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .agegate.hide { display: none; }
+  .age-card { max-width: 480px; text-align: center; }
+  .age-card .brand { justify-content: center; font-size: 34px; margin-bottom: 28px; }
+  .age-card h2 { font-size: 1.5rem; text-transform: uppercase; margin-bottom: 16px; }
+  .age-card p { color: var(--muted); font-size: 0.95rem; margin-bottom: 12px; }
+  .age-card .warn { font-family:'JetBrains Mono',monospace; font-size: 11px; color: var(--muted-2); letter-spacing: 0.04em; margin: 24px 0; padding: 14px; border: 1px solid var(--line); border-radius: 3px; }
+  .age-actions { display: flex; gap: 12px; margin-top: 8px; }
+  .age-actions button { flex: 1; padding: 14px; border-radius: 2px; font-family:'Chakra Petch',sans-serif; font-weight:700; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .age-yes { background: var(--lime); color: var(--void); }
+  .age-no { border: 1px solid var(--line); color: var(--muted); }
+  .age-no:hover { border-color: var(--amber); color: var(--amber); }
+
+  /* ─────────── RESPONSIVE ─────────── */
+  @media (max-width: 980px) {
+    .grid, .pillars { grid-template-columns: repeat(2,1fr); }
+    .stats { grid-template-columns: repeat(2,1fr); }
+    .chain { grid-template-columns: 1fr; gap: 22px; }
+    .step { padding: 0 0 0 12px; }
+    .step:not(:last-child)::after { display: none; }
+    .coa-row { grid-template-columns: 1fr; gap: 30px; }
+    .foot-grid { grid-template-columns: 1fr 1fr; gap: 30px; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding: 0 18px; }
+    .grid, .pillars, .stats, .foot-grid { grid-template-columns: 1fr; }
+    .alerts { padding: 36px 22px; }
+    .alerts .field { flex-direction: column; }
+    .hero { padding: 60px 0 50px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ══════════ LOGIN ══════════ -->
-<div id="login">
-  <h1>SMG <span>Admin</span></h1>
-  <p class="sub">Manage your products. Enter your admin password to continue.</p>
-  <div class="row">
-    <label for="pw">Admin password</label>
-    <input id="pw" type="password" autocomplete="current-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+<!-- AGE GATE -->
+<div class="agegate" id="ageGate">
+  <div class="age-card">
+    <div class="brand"><span class="s">S</span><span class="m">M</span><span class="g">G</span><small>Performance Labs</small></div>
+    <h2>Research Personnel Only</h2>
+    <p>You must be <strong>21 years or older</strong> and a qualified researcher, or purchasing on behalf of a research institution, to enter this site.</p>
+    <div class="warn">All products are sold strictly for in-vitro laboratory research use only. Not for human or animal consumption. No medical or therapeutic claims are made or implied.</div>
+    <div class="age-actions">
+      <button class="age-yes" onclick="enterSite()">I Agree — Enter</button>
+      <button class="age-no" onclick="window.location.href='https://www.google.com'">Decline</button>
+    </div>
   </div>
-  <div class="row">
-    <button class="primary" style="width:100%" id="loginBtn" onclick="doLogin()">Unlock</button>
-  </div>
-  <div class="msg" id="loginMsg"></div>
-  <p class="hint" style="margin-top:18px"><a href="#" onclick="showReset(true);return false;">Forgot password?</a> — reset it with your recovery code.</p>
 </div>
 
-<!-- ══════════ RESET (recovery code) ══════════ -->
-<div id="reset" style="display:none">
-  <h1>Reset <span>password</span></h1>
-  <p class="sub">Enter your recovery code and choose a new password.</p>
-  <div class="row">
-    <label for="rc">Recovery code</label>
-    <input id="rc" type="text" autocomplete="off" placeholder="Your recovery code">
+<!-- ANNOUNCEMENT -->
+<div class="announce">
+  <div class="announce-track" id="annTrack">
+    <span>◆ Free Shipping On Orders Over $175</span><span>◆ Same-Day Dispatch Before 2PM CT</span><span>◆ Batch-Specific COA With Every Order</span><span>◆ Strictly For Laboratory Research Use</span>
+    <span>◆ Free Shipping On Orders Over $175</span><span>◆ Same-Day Dispatch Before 2PM CT</span><span>◆ Batch-Specific COA With Every Order</span><span>◆ Strictly For Laboratory Research Use</span>
   </div>
-  <div class="row">
-    <label for="rnew">New password</label>
-    <input id="rnew" type="password" autocomplete="new-password" placeholder="At least 8 characters">
-  </div>
-  <div class="row">
-    <button class="primary" style="width:100%" id="resetBtn" onclick="doReset()">Set new password</button>
-  </div>
-  <div class="msg" id="resetMsg"></div>
-  <p class="hint" style="margin-top:18px"><a href="#" onclick="showReset(false);return false;">← Back to login</a></p>
 </div>
 
-<!-- ══════════ EDITOR ══════════ -->
-<div id="editor" class="wrap">
-  <header>
+<!-- HEADER -->
+<header id="hdr">
+  <div class="wrap nav">
+    <a href="#top" class="brand"><span class="s">S</span><span class="m">M</span><span class="g">G</span><small>Performance Labs</small></a>
+    <nav class="nav-links">
+      <a href="#shop">Catalog</a>
+      <a href="#process">Process</a>
+      <a href="#coa">COA</a>
+      <a href="#faq">FAQ</a>
+      <a href="#alerts">Wholesale</a>
+    </nav>
+    <button class="cart-toggle" onclick="openCart()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 01-8 0"/></svg>
+      CART <span class="cart-badge" id="badge">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-hex-field">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><pattern id="hexpat" width="34" height="30" patternUnits="userSpaceOnUse" patternTransform="scale(1)">
+        <polygon points="17,0 34,8.5 34,25.5 17,34 0,25.5 0,8.5" fill="none" stroke="#A3E635" stroke-width="0.6"/>
+      </pattern></defs>
+      <rect width="200" height="200" fill="url(#hexpat)"/>
+    </svg>
+  </div>
+  <div class="wrap hero-inner">
+    <div class="eyebrow"><span class="hex"></span> Science · Wellness · Performance</div>
+    <h1>Research-Grade<br><span class="lime">Peptides.</span> <span class="outline">Verified</span><br>Every Batch.</h1>
+    <p class="lead">HPLC and mass-spectrometry confirmed. Every vial ships with a batch-specific Certificate of Analysis. Manufactured and dispatched in the USA.</p>
+    <div class="hero-cta">
+      <a href="#shop" class="btn-primary">Shop Compounds →</a>
+      <a href="#coa" class="btn-ghost">View COA Library</a>
+    </div>
+
+    <div class="hero-ticker">
+      <div class="hero-ticker-track">
+        <span>GLP3-R</span><span class="dot">✦</span><span>Cagrilintide</span><span class="dot">✦</span><span>MOTS-c</span><span class="dot">✦</span><span>GHK-Cu</span><span class="dot">✦</span><span>AHK-Cu</span><span class="dot">✦</span><span>SS-31</span><span class="dot">✦</span><span>IGF-1 LR3</span><span class="dot">✦</span><span>BPC-157</span><span class="dot">✦</span><span>TB-500</span><span class="dot">✦</span><span>NAD+</span><span class="dot">✦</span>
+        <span>GLP3-R</span><span class="dot">✦</span><span>Cagrilintide</span><span class="dot">✦</span><span>MOTS-c</span><span class="dot">✦</span><span>GHK-Cu</span><span class="dot">✦</span><span>AHK-Cu</span><span class="dot">✦</span><span>SS-31</span><span class="dot">✦</span><span>IGF-1 LR3</span><span class="dot">✦</span><span>BPC-157</span><span class="dot">✦</span><span>TB-500</span><span class="dot">✦</span><span>NAD+</span><span class="dot">✦</span>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="num" data-target="99">0</div><div class="lab">Purity Threshold %</div></div>
+      <div class="stat"><div class="num" data-target="10">0</div><div class="lab">Compounds Cataloged</div></div>
+      <div class="stat"><div class="num" data-target="100">0</div><div class="lab">Batches Traced %</div></div>
+      <div class="stat"><div class="num" data-target="175" data-prefix="$">0</div><div class="lab">Free Shipping Over</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CATALOG -->
+<section class="block" id="shop">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow"><span class="hex"></span> 2026 Catalog</div>
+      <h2>In Stock. In Spec. In Vial.</h2>
+      <p>Every compound below is released against a minimum HPLC purity threshold and ships with its lot-matched Certificate of Analysis.</p>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<!-- PILLARS -->
+<section class="block" id="process" style="background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow"><span class="hex"></span> Quality Standard</div>
+      <h2>Three Pillars. Zero Asterisks.</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pnum">01 / VALIDATION</div>
+        <h3>Analytical Testing</h3>
+        <p>Every batch is screened by high-performance liquid chromatography and mass spectrometry before it is cleared for release.</p>
+        <div class="pstat">≥99.1%<small>Minimum HPLC Purity</small></div>
+      </div>
+      <div class="pillar">
+        <div class="pnum">02 / TRACEABILITY</div>
+        <h3>Batch Traceability</h3>
+        <p>Each vial carries a unique lot number that maps to its own Certificate of Analysis — no shared or generic documents.</p>
+        <div class="pstat">100%<small>Lot-Matched COAs</small></div>
+      </div>
+      <div class="pillar">
+        <div class="pnum">03 / INTEGRITY</div>
+        <h3>Cold-Chain Handling</h3>
+        <p>Compounds are stored and dispatched under controlled refrigeration to preserve molecular stability in transit.</p>
+        <div class="pstat">2–8°C<small>Controlled Storage</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS CHAIN -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow"><span class="hex"></span> The Chain</div>
+      <h2>A Five-Step Chain You Can Audit.</h2>
+    </div>
+    <div class="chain">
+      <div class="step"><div class="snum">1</div><h4>Synthesis</h4><p>Solid-phase peptide synthesis under GMP-aligned protocols.</p></div>
+      <div class="step"><div class="snum">2</div><h4>HPLC</h4><p>Purity confirmed by high-performance liquid chromatography.</p></div>
+      <div class="step"><div class="snum">3</div><h4>Mass Spec</h4><p>Molecular weight verified against theoretical mass.</p></div>
+      <div class="step"><div class="snum">4</div><h4>COA Issued</h4><p>Batch-specific certificate generated and attached to the lot.</p></div>
+      <div class="step"><div class="snum">5</div><h4>Dispatch</h4><p>Refrigerated, discreetly packed, same-day before 2PM CT.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- COA -->
+<section class="block" id="coa" style="background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap coa-row">
     <div>
-      <h1>SMG <span>Admin</span> — Products</h1>
-      <p class="sub">Edit anything, then hit <strong>Save all changes</strong>. Your live store updates within a minute.</p>
+      <div class="eyebrow"><span class="hex"></span> Documentation</div>
+      <h2 style="font-size:clamp(2rem,4vw,2.9rem);text-transform:uppercase;margin:16px 0 14px;">Every Batch. Every Value. Documented.</h2>
+      <p style="color:var(--muted);margin-bottom:26px;">You should never have to take a purity claim on faith. Every lot we release is backed by an independent Certificate of Analysis showing the actual measured values — identity, purity, and mass — for that specific batch.</p>
+      <a href="#shop" class="btn-primary">Browse Documented Lots →</a>
     </div>
-    <div style="display:flex;gap:10px">
-      <a href="/" target="_blank"><button>View store ↗</button></a>
-      <button onclick="openAccount()">Account</button>
-      <button onclick="location.reload()">Reload</button>
+    <div class="coa-cert">
+      <div class="ch"><b>Certificate of Analysis</b><span class="verif">✓ Verified</span></div>
+      <table>
+        <tr><td>Compound</td><td>GLP3-R</td></tr>
+        <tr><td>Lot Number</td><td>PF-RET-0421</td></tr>
+        <tr><td>Test Method</td><td>HPLC / LC-MS</td></tr>
+        <tr><td>Molecular Weight</td><td>4731.4 g/mol</td></tr>
+        <tr><td>Measured Purity</td><td class="pass">99.42%</td></tr>
+        <tr><td>Identity</td><td class="pass">CONFIRMED</td></tr>
+        <tr><td>Release Status</td><td class="pass">PASSED</td></tr>
+      </table>
     </div>
-  </header>
-
-  <div class="toolbar">
-    <button class="primary" onclick="addProduct()">+ Add product</button>
-    <div class="grow"></div>
-    <span class="count" id="count"></span>
   </div>
+</section>
 
-  <div id="list"></div>
-
-  <div class="savebar">
-    <div class="inner">
-      <button class="primary" id="saveBtn" onclick="saveAll()">Save all changes</button>
-      <span class="msg" id="saveMsg"></span>
-      <div class="grow"></div>
-      <span class="count">Tip: set status to <strong>Restocking</strong> to hide the Add button and show “Notify”.</span>
+<!-- FAQ -->
+<section class="block" id="faq">
+  <div class="wrap" style="max-width:900px;">
+    <div class="sec-head">
+      <div class="eyebrow"><span class="hex"></span> Support</div>
+      <h2>Frequently Asked. Always Answered.</h2>
     </div>
+    <div id="faqList"></div>
+  </div>
+</section>
+
+<!-- ALERTS -->
+<section class="block" id="alerts">
+  <div class="wrap">
+    <div class="alerts">
+      <div class="eyebrow" style="justify-content:center;margin-bottom:14px;"><span class="hex"></span> Batch Alerts &amp; Wholesale</div>
+      <h2>First Batch. First Call.</h2>
+      <p>Get notified the moment a restock or new compound lands. Wholesale researchers — reach out for institutional pricing.</p>
+      <div class="field">
+        <input type="email" id="nlEmail" placeholder="you@researchlab.com" />
+        <button class="btn-primary" onclick="subscribe()">Notify Me</button>
+      </div>
+      <p style="font-size:11px;margin-top:16px;font-family:'JetBrains Mono',monospace;">One email per batch release · No marketing drips</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="brand" style="font-size:24px;"><span class="s">S</span><span class="m">M</span><span class="g">G</span><small>Performance Labs</small></div>
+        <p>Research-grade peptides and wellness supplies. Science-backed, lab-tested, batch-verified. Trusted source for the research community.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Catalog</h5>
+        <a href="#shop">All Compounds</a>
+        <a href="#shop">GLP-1 / GIP</a>
+        <a href="#shop">Recovery</a>
+        <a href="#shop">Blends</a>
+      </div>
+      <div class="foot-col">
+        <h5>Resources</h5>
+        <a href="#coa">COA Library</a>
+        <a href="#process">Testing Process</a>
+        <a href="#faq">FAQ</a>
+        <a href="#alerts">Batch Alerts</a>
+      </div>
+      <div class="foot-col">
+        <h5>Company</h5>
+        <a href="#alerts">Wholesale</a>
+        <a href="#">Shipping Policy</a>
+        <a href="#">Refund Policy</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="foot-legal">
+      <p><strong style="color:var(--muted);">Research Use Only.</strong> All products sold by SMG Performance Labs are intended strictly for in-vitro laboratory and research purposes. They are not intended for human or animal consumption, and no medical, therapeutic, or diagnostic use is expressed or implied. By purchasing, you confirm you are a qualified researcher aged 21 or older.</p>
+      <span class="cr">© 2026 SMG PERFORMANCE LABS</span>
+    </div>
+  </div>
+</footer>
+
+<!-- CART DRAWER -->
+<div class="overlay" id="ov" onclick="closeCart()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-h">
+    <h3>Your Cart</h3>
+    <button class="x" onclick="closeCart()">✕</button>
+  </div>
+  <div class="drawer-items" id="cartItems"></div>
+  <div class="drawer-f">
+    <div class="drawer-total"><span class="tl">Subtotal</span><span class="tv" id="cartTotal">$0.00</span></div>
+    <div class="ship-note" id="shipNote">Add $175.00 for free shipping</div>
+    <button class="checkout" id="checkoutBtn" onclick="openCheckout()" disabled>Request Invoice →</button>
   </div>
 </div>
 
-<!-- ══════════ ACCOUNT MODAL ══════════ -->
-<div id="acctOv" class="modal-ov" onclick="if(event.target===this)closeAccount()">
+<!-- CHECKOUT MODAL -->
+<div class="modal-ov" id="modalOv">
   <div class="modal">
-    <div class="modal-head"><h2>Account</h2><button class="xbtn" onclick="closeAccount()">✕</button></div>
+    <div id="formState">
+      <h2>Request Your Invoice</h2>
+      <p class="sub">We'll send a Square invoice straight to your inbox. Pay securely at your convenience — no card details entered here.</p>
+      <div class="fr"><label for="cName">Full Name</label><input type="text" id="cName" placeholder="Jane Researcher" autocomplete="name" /></div>
+      <div class="fr"><label for="cEmail">Email Address</label><input type="email" id="cEmail" placeholder="jane@researchlab.com" autocomplete="email" /></div>
 
-    <section class="acct-sec">
-      <h3>Change password</h3>
-      <label>Current password</label>
-      <input id="ac_cur" type="password" autocomplete="current-password" placeholder="Current password">
-      <label>New password</label>
-      <input id="ac_new" type="password" autocomplete="new-password" placeholder="At least 8 characters">
-      <button class="primary" onclick="changePassword()">Update password</button>
-      <div class="msg" id="ac_pwMsg"></div>
-    </section>
+      <div class="fr">
+        <label>Fulfillment</label>
+        <div class="fulfill">
+          <button type="button" class="ff-opt active" data-ff="pickup" onclick="setFulfill('pickup')">
+            <span class="ff-title">Gym Pickup</span>
+            <span class="ff-sub" id="gymName">Free · Chickasha, OK</span>
+          </button>
+          <button type="button" class="ff-opt" data-ff="delivery" onclick="setFulfill('delivery')">
+            <span class="ff-title">Delivery / Mail</span>
+            <span class="ff-sub">+$10.00</span>
+          </button>
+        </div>
+        <p class="ff-note" id="pickupNote">Pick up at: <a href="https://maps.google.com/?q=623+1/2+W+Grand+Ave,+Chickasha,+OK+73018" target="_blank" rel="noopener" style="color:var(--lime);text-decoration:underline;"><strong id="gymAddr">623½ W Grand Ave, Chickasha, OK 73018</strong></a></p>
+      </div>
 
-    <section class="acct-sec">
-      <h3>Change recovery code</h3>
-      <p class="hint">This is the code that resets your password if you forget it. Keep it somewhere safe.</p>
-      <label>Current password</label>
-      <input id="ac_rcpw" type="password" autocomplete="current-password" placeholder="Confirm with your password">
-      <label>New recovery code</label>
-      <input id="ac_rc" type="text" autocomplete="off" placeholder="At least 6 characters">
-      <button class="primary" onclick="changeRecovery()">Update recovery code</button>
-      <div class="msg" id="ac_rcMsg"></div>
-    </section>
-
-    <section class="acct-sec">
-      <h3>Payment settings (Square)</h3>
-      <p class="hint">Connect your own Square account — customer payments go here. Find these in your Square dashboard under Developer → Applications → Credentials, and Locations.</p>
-      <div class="pay-status" id="pay_status">Checking…</div>
-      <label>Square access token</label>
-      <input id="pay_token" type="password" autocomplete="off" placeholder="Paste your Square access token">
-      <label>Location ID</label>
-      <input id="pay_loc" type="text" autocomplete="off" placeholder="e.g. LXXXXXXXXXXXX">
-      <label>Mode</label>
-      <select id="pay_env">
-        <option value="production">Production (live payments)</option>
-        <option value="sandbox">Sandbox (testing only)</option>
-      </select>
-      <button class="primary" onclick="savePayment()">Save payment settings</button>
-      <div class="msg" id="pay_msg"></div>
-    </section>
+      <div class="osum" id="osum"></div>
+      <div class="m-actions">
+        <button class="m-cancel" onclick="closeCheckout()">Cancel</button>
+        <button class="m-send" id="sendBtn" onclick="submitInvoice()"><span id="sendLabel">Send Invoice</span></button>
+      </div>
+      <p class="err" id="errMsg"></p>
+    </div>
+    <div id="successState" style="display:none;">
+      <div class="success">
+        <div class="schex"><svg viewBox="0 0 24 24" fill="none" stroke="#A3E635" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h2>Invoice Sent</h2>
+        <p>Check your inbox at <span class="em" id="successEmail"></span>.<br>Your Square invoice link lets you pay securely.</p>
+        <button class="btn-done" onclick="resetAll()">Back to Catalog</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-  const API_SAVE = '/.netlify/functions/save-products';
-  const API_GET  = '/.netlify/functions/get-products';
-  const API_AUTH = '/.netlify/functions/admin-auth';
-  const STATUSES = [['stock','In Stock'],['feat','Featured'],['restock','Restocking']];
+  // ═══════════ PRODUCT DATA ═══════════
+  // img = real product photo in /images. Prices from PeptideFix where known; others $39.99 default (adjust later).
+  let PRODUCTS = [
+    { id:1,  cat:"GLP-1 / GIP",   name:"Tirzepatide",           spec:"10mg · ≥99% HPLC",              price:59.99, status:"stock", lot:"SMG-TZP-01", img:"tirzepatide" },
+    { id:2,  cat:"GHRH / GHRP",   name:"CJC-1295 + Ipamorelin", spec:"5mg / 5mg · ≥99% HPLC",         price:54.99, status:"stock", lot:"SMG-CJC-01", img:"cjc-ipamorelin" },
+    { id:3,  cat:"Metabolic",     name:"MOTS-c",                spec:"10mg · ≥99% HPLC",              price:34.99, status:"stock", lot:"SMG-MTS-01", img:"mots-c" },
+    { id:4,  cat:"Cosmetic",      name:"GHK-Cu",                spec:"50mg · ≥99% HPLC",              price:34.99, status:"stock", lot:"SMG-GHK-01", img:"ghk-cu" },
+    { id:5,  cat:"Cosmetic",      name:"AHK-Cu",                spec:"50mg · ≥99% HPLC",              price:39.99, status:"stock", lot:"SMG-AHK-01", img:"ahk-cu" },
+    { id:6,  cat:"Longevity",     name:"NAD+",                  spec:"1000mg · ≥99% HPLC",            price:44.99, status:"stock", lot:"SMG-NAD-01", img:"nad" },
+    { id:7,  cat:"Growth",        name:"IGF-1 LR3",             spec:"1mg · ≥99% HPLC",               price:44.99, status:"stock", lot:"SMG-IGF-01", img:"igf-1-lr3" },
+    { id:8,  cat:"Recovery",      name:"TB-500",                spec:"10mg · ≥99% HPLC",              price:44.99, status:"stock", lot:"SMG-TB5-01", img:"tb-500" },
+    { id:9,  cat:"Recovery",      name:"KPV",                   spec:"10mg · ≥99% HPLC",              price:39.99, status:"stock", lot:"SMG-KPV-01", img:"kpv" },
+    { id:10, cat:"Recovery",      name:"ARA-290",               spec:"16mg · ≥99% HPLC",              price:44.99, status:"stock", lot:"SMG-ARA-01", img:"ara-290" },
+    { id:11, cat:"GHRH / GHRP",   name:"Tesamorelin",           spec:"10mg · ≥99% HPLC",              price:54.99, status:"stock", lot:"SMG-TES-01", img:"tesamorelin" },
+    { id:12, cat:"GHRH / GHRP",   name:"Sermorelin Acetate",    spec:"10mg · ≥99% HPLC",              price:39.99, status:"stock", lot:"SMG-SER-01", img:"sermorelin" },
+    { id:13, cat:"Nootropic",     name:"Selank",                spec:"10mg · ≥99% HPLC",              price:39.99, status:"stock", lot:"SMG-SLK-01", img:"selank" },
+    { id:14, cat:"Nootropic",     name:"SEMAX",                 spec:"10mg · ≥99% HPLC",              price:39.99, status:"stock", lot:"SMG-SMX-01", img:"semax" },
+    { id:15, cat:"Wellness",      name:"Kisspeptin-10",         spec:"10mg · ≥99% HPLC",              price:39.99, status:"stock", lot:"SMG-KIS-01", img:"kisspeptin" },
+    { id:16, cat:"Wellness",      name:"PT-141",                spec:"10mg · ≥99% HPLC",              price:39.99, status:"stock", lot:"SMG-PT1-01", img:"pt-141" },
+    { id:17, cat:"Wellness",      name:"HCG",                   spec:"5000iu · ≥99% HPLC",            price:49.99, status:"stock", lot:"SMG-HCG-01", img:"hcg" },
+    { id:18, cat:"Blends",        name:"GLOW Blend",            spec:"BPC-157 + GHK-Cu + TB-500",     price:69.99, status:"stock", lot:"SMG-GLW-01", img:"glow" },
+    { id:19, cat:"Supplies",      name:"Bacteriostatic Water",  spec:"30mL Multi-dose USP",           price:9.99,  status:"stock", lot:"SMG-BAC-01", img:"bac-water", imgFrame:true },
+    { id:20, cat:"GLP-1 / GIP",   name:"GLP3-R",             spec:"10mg · ≥99% HPLC",              price:54.99, status:"stock", lot:"SMG-RTA-01", img:"r3ta" },
+    { id:21, cat:"GLP-1 / GIP",   name:"Cagrilintide",          spec:"10mg · ≥99% HPLC",              price:44.99, status:"stock", lot:"SMG-CAG-01", img:"cagrilintide" },
+    { id:22, cat:"Recovery",      name:"BPC-157",               spec:"10mg · ≥99% HPLC",              price:34.99, status:"stock", lot:"SMG-BPC-01", img:"bpc-157" },
+    { id:23, cat:"Metabolic",     name:"AOD-9604",              spec:"5mg · ≥99% HPLC",               price:39.99, status:"stock", lot:"SMG-AOD-01", img:"aod-9604" },
+    { id:24, cat:"Metabolic",     name:"5-Amino-1MQ",           spec:"50mg · ≥99% HPLC",              price:44.99, status:"stock", lot:"SMG-5AM-01", img:"5-amino-1mq" },
+    { id:25, cat:"Blends",        name:"KLOW Blend",            spec:"KPV + BPC-157 + GHK-Cu + TB-500", price:89.99, status:"stock", lot:"SMG-KLW-01", img:"klow" },
+    { id:26, cat:"Blends",        name:"Wolverine Blend",       spec:"BPC-157 + TB-500",              price:44.99, status:"stock", lot:"SMG-WLV-01", img:"wolverine" },
+    { id:27, cat:"Longevity",     name:"SS-31",                 spec:"10mg · ≥99% HPLC",             price:44.99, status:"stock", lot:"SMG-SS31-01", img:"ss-31" },
+    { id:28, cat:"Longevity",     name:"Epithalon",             spec:"10mg · ≥99% HPLC",             price:44.99, status:"stock", lot:"SMG-EPI-01", img:"epithalon" },
+    { id:29, cat:"GHRH / GHRP",   name:"GHRP-6",                spec:"5mg · ≥99% HPLC",              price:24.99, status:"stock", lot:"SMG-GH6-01", img:"ghrp-6" },
+    { id:30, cat:"GHRH / GHRP",   name:"Ipamorelin",            spec:"5mg · ≥99% HPLC",              price:29.99, status:"stock", lot:"SMG-IPA-01", img:"ipamorelin" },
+    { id:31, cat:"Growth",        name:"HGH",                   spec:"10iu · ≥99% HPLC",             price:99.99, status:"stock", lot:"SMG-HGH-01", img:"hgh" },
+    { id:32, cat:"Cosmetic",      name:"Melanotan II",          spec:"10mg · ≥99% HPLC",             price:34.99, status:"stock", lot:"SMG-MT2-01", img:"melanotan-2" },
+    { id:33, cat:"Supplies",      name:"Acetic Acid Water",     spec:"Sterile diluent",              price:9.99,  status:"stock", lot:"SMG-ACE-01", img:"acetic-acid-water" },
+    { id:34, cat:"Supplies",      name:"Sharps Container",      spec:"Puncture-resistant",           price:9.99,  status:"stock", lot:"SMG-SHP-01", img:"sharps-container" },
+    { id:35, cat:"Supplies",      name:"Research Kit",          spec:"Sharps + vial + syringes + pads", price:24.99, status:"stock", lot:"SMG-KIT-01", img:"research-kit" },
+    { id:36, cat:"Supplies",      name:"PBS",                   spec:"Phosphate Buffered Saline 1×", price:11.99, status:"stock", lot:"SMG-PBS-01", img:"pbs", imgFrame:true },
+  ];
 
-  let PASSWORD = '';
-  let products = [];
-  let bios = {};
+  // Product bios (research descriptions). Owner can edit/add freely.
+  let BIOS = {
+    "Tirzepatide": "A dual GIP and GLP-1 receptor agonist studied in metabolic and adipose-tissue research. Investigated for its role in glucose regulation, appetite signaling, and energy-balance pathways within laboratory models.",
+    "CJC-1295 + Ipamorelin": "A dual growth-hormone signaling blend. CJC-1295 (No DAC) is a GHRH analog that stimulates the pituitary, while Ipamorelin selectively activates the ghrelin receptor. Studied together for pulsatile GH release, IGF-1 pathways, and tissue-recovery research.",
+    "MOTS-c": "A mitochondrial-derived peptide studied for its role in cellular metabolism, energy utilization, and metabolic-regulation pathways. Of interest in longevity and mitochondrial-signaling research.",
+    "GHK-Cu": "A copper-binding tripeptide studied for its role in skin biology, collagen regulation, and extracellular-matrix maintenance. Widely investigated in regenerative and cosmetic research models.",
+    "AHK-Cu": "A copper-binding tripeptide (Alanine-Histidine-Lysine) studied in hair-follicle biology, cellular regeneration, and growth-factor signaling. Investigated for tissue remodeling and follicular-activity research.",
+    "NAD+": "Nicotinamide adenine dinucleotide, a coenzyme central to cellular energy metabolism. Studied for its role in mitochondrial function, DNA repair signaling, and longevity-related pathways.",
+    "IGF-1 LR3": "A long-acting analog of insulin-like growth factor 1. Studied for cellular growth, protein synthesis, and tissue-repair signaling pathways in laboratory research.",
+    "TB-500": "A synthetic version of Thymosin Beta-4 studied for its role in cellular migration, angiogenesis, and tissue-repair pathways. Widely investigated in recovery and connective-tissue research.",
+    "KPV": "A tripeptide fragment of alpha-MSH studied for its anti-inflammatory signaling and role in gut-barrier and immune-pathway research.",
+    "ARA-290": "Also known as Cibinetide, a synthetic erythropoietin-derived peptide studied for tissue-protective and anti-inflammatory signaling — without stimulating red-blood-cell production. Investigated in nerve-repair and cellular-recovery research.",
+    "Tesamorelin": "A synthetic growth-hormone-releasing hormone (GHRH) analog studied for its interaction with pituitary signaling and its role in metabolic and adipose-tissue research.",
+    "Sermorelin Acetate": "A GHRH analog studied for stimulating natural growth-hormone release through pituitary signaling. Investigated in endocrine and metabolic research models.",
+    "Selank": "A synthetic peptide studied for its role in anxiety-related signaling, cognitive pathways, and neuro-modulation research.",
+    "SEMAX": "A synthetic peptide derived from an ACTH fragment, studied for neuroprotective signaling, cognitive pathways, and BDNF-related research.",
+    "Kisspeptin-10": "A peptide studied for its role in reproductive-endocrine signaling and regulation of the hypothalamic-pituitary-gonadal axis in laboratory research.",
+    "PT-141": "Also known as Bremelanotide, a melanocortin-receptor agonist studied for its role in central-nervous-system signaling pathways in research models.",
+    "HCG": "Human chorionic gonadotropin, studied for its role in endocrine signaling and reproductive-pathway research.",
+    "GLOW Blend": "A recovery and skin-focused research blend combining BPC-157, GHK-Cu, and TB-500 — studied for tissue-repair, regenerative, and extracellular-matrix signaling pathways.",
+    "Bacteriostatic Water": "Sterile 0.9% benzyl-alcohol water used as a diluent for reconstituting lyophilized research compounds. Preservative formulation supports multi-use laboratory preparation under sterile technique.",
+    "GLP3-R": "A triple receptor agonist studied across the GIP, GLP-1, and glucagon receptor families. Investigated in metabolic research for glucose regulation, appetite signaling, and energy-expenditure pathways — the current apex of incretin research compounds.",
+    "Cagrilintide": "A long-acting amylin analog studied for its role in appetite regulation and metabolic signaling. Investigated on its own and alongside GLP-1 compounds in weight-management research models.",
+    "BPC-157": "Body Protection Compound-157, a synthetic peptide derived from a protein found in gastric juice. Studied extensively for tissue repair, angiogenesis, and anti-inflammatory signaling — popular in tendon, ligament, muscle, and gut-healing research.",
+    "AOD-9604": "A modified fragment of human growth hormone (residues 176–191) studied for fat metabolism and lipolytic signaling. Investigated for its ability to mimic GH's fat-burning effects without affecting blood sugar or growth pathways.",
+    "5-Amino-1MQ": "A small-molecule NNMT inhibitor studied for its role in cellular metabolism, NAD+ regulation, and adipocyte signaling. Investigated in metabolic and longevity research models.",
+    "KLOW Blend": "A comprehensive recovery and skin research blend combining KPV, BPC-157, GHK-Cu, and TB-500 — studied for tissue-repair, anti-inflammatory, and regenerative signaling pathways.",
+    "Wolverine Blend": "A recovery-focused research blend pairing BPC-157 and TB-500 — studied together for tissue repair, cellular migration, and connective-tissue regeneration pathways.",
+    "SS-31": "Also known as Elamipretide, a mitochondria-targeted peptide studied for its role in stabilizing cardiolipin on the inner mitochondrial membrane. Investigated for mitochondrial function, cellular energy production, and oxidative-stress pathways in longevity research.",
+    "Epithalon": "A synthetic tetrapeptide (Ala-Glu-Asp-Gly) studied for its role in telomerase activity, circadian regulation, and cellular-aging pathways. Widely investigated in longevity and pineal-signaling research.",
+    "GHRP-6": "A growth-hormone-releasing hexapeptide studied for its role in ghrelin-receptor activation and pulsatile GH release. Investigated for appetite signaling and tissue-recovery pathways in laboratory research.",
+    "Ipamorelin": "A selective growth-hormone secretagogue studied for its clean, targeted stimulation of GH release via the ghrelin receptor — without significantly affecting cortisol or prolactin. Investigated in recovery and GH-signaling research.",
+    "HGH": "Human growth hormone, studied for its central role in cellular growth, protein synthesis, metabolism, and tissue-repair signaling across a wide range of laboratory research models.",
+    "Melanotan II": "A synthetic melanocortin analog studied for its role in melanogenesis (pigmentation) and central melanocortin-receptor signaling. Investigated in pigmentation and appetite-pathway research.",
+    "Acetic Acid Water": "Dilute acetic acid solution used as a reconstitution diluent for peptides with poor solubility in bacteriostatic water. Supports laboratory preparation under sterile technique.",
+    "Sharps Container": "A puncture-resistant biohazard container for the safe disposal of used needles and syringes in a research setting. Supports secure, compliant sharps handling.",
+    "Research Kit": "An all-in-one research starter kit — includes a puncture-resistant sharps container, a research solution vial, insulin syringes, and 70% isopropyl alcohol prep pads. Everything needed for clean, compliant laboratory handling.",
+    "PBS": "Phosphate Buffered Saline (1×, pH 7.4) — a sterile, isotonic buffer widely used as a diluent and wash solution in laboratory research. Endotoxin level < 0.5 EU/mL.",
+  };
 
-  async function auth(payload){
-    const res = await fetch(API_AUTH, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
+  let CATS = ["All", ...new Set(PRODUCTS.map(p => p.cat))];
+  let cart = [];
+  let activeFilter = "All";
+  const FREE_SHIP = 175;
+
+  // small flask icon (used in cart line items)
+  const iconSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="#A3E635" stroke-width="1.4"><path d="M9 2h6M10 2v5.5L6.5 15A3 3 0 009.2 20h5.6a3 3 0 002.7-4.5L14 7.5V2"/><path d="M8 13h8" stroke="#8B9680"/></svg>`;
+  const badgeLabel = { stock:"In Stock", feat:"Featured", restock:"Restocking" };
+
+  // Normalize a product's sizes → [{label, price}]. Falls back to a single
+  // size (from legacy price) so older data never breaks the store.
+  function sizesOf(p){
+    if(Array.isArray(p.sizes) && p.sizes.length){
+      return p.sizes.map(s => ({ label: String(s.label||''), price: parseFloat(s.price)||0 }));
+    }
+    return [{ label: '', price: parseFloat(p.price)||0 }];
+  }
+
+  // extract dose (e.g. "10mg" -> "10 MG") from a spec string
+  function doseFrom(spec){
+    const m = spec.match(/([\d.]+)\s*(mg|mcg|iu)/i);
+    if(!m) return 'RESEARCH';
+    return m[1] + ' ' + m[2].toUpperCase();
+  }
+
+  // SMG-branded research vial — same bottle, name swapped per product
+  function brandedVial(name, dose){
+    const fs = name.length > 13 ? 7 : (name.length > 10 ? 8.5 : 10.5);
+    return `<svg class="bottle" viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="gGlass" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#1a1f16"/><stop offset="0.15" stop-color="#2a3320"/>
+          <stop offset="0.5" stop-color="#3d4a2e"/><stop offset="0.85" stop-color="#2a3320"/>
+          <stop offset="1" stop-color="#1a1f16"/>
+        </linearGradient>
+        <linearGradient id="gCap" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#6b8f1f"/><stop offset="0.5" stop-color="#A3E635"/><stop offset="1" stop-color="#6b8f1f"/>
+        </linearGradient>
+        <linearGradient id="gSilver" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#e8edf2"/><stop offset="0.5" stop-color="#b0b8c0"/><stop offset="1" stop-color="#8a9299"/>
+        </linearGradient>
+      </defs>
+      <rect x="55" y="30" width="90" height="210" rx="8" fill="url(#gGlass)" stroke="#0a0c0a" stroke-width="1.5"/>
+      <rect x="63" y="40" width="7" height="190" rx="3.5" fill="#ffffff" opacity="0.10"/>
+      <rect x="72" y="18" width="56" height="20" rx="2" fill="url(#gGlass)" stroke="#0a0c0a" stroke-width="1"/>
+      <rect x="68" y="6" width="64" height="18" rx="3" fill="url(#gCap)" stroke="#4a5f14" stroke-width="1"/>
+      <rect x="68" y="6" width="64" height="5" rx="2" fill="#ffffff" opacity="0.25"/>
+      <rect x="57" y="212" width="86" height="26" rx="1" fill="#e8ede4" opacity="0.05"/>
+      <rect x="58" y="70" width="84" height="150" rx="2" fill="#0A0C0A"/>
+      <rect x="58" y="70" width="84" height="3" fill="#A3E635"/>
+      <text x="100" y="92" font-family="'Chakra Petch',sans-serif" font-weight="700" font-size="17" text-anchor="middle" letter-spacing="0.5"><tspan fill="url(#gSilver)">SM</tspan><tspan fill="#A3E635">G</tspan></text>
+      <text x="100" y="102" font-family="'Chakra Petch',sans-serif" font-weight="600" font-size="4.5" fill="#8B9680" text-anchor="middle" letter-spacing="1.2">PERFORMANCE LABS</text>
+      <line x1="66" y1="108" x2="134" y2="108" stroke="#2A3320" stroke-width="0.8"/>
+      <rect x="64" y="116" width="72" height="26" rx="2" fill="#12160F" stroke="url(#gSilver)" stroke-width="1"/>
+      <text x="100" y="132" font-family="'Chakra Petch',sans-serif" font-weight="700" font-size="${fs}" fill="#E8EDE4" text-anchor="middle" letter-spacing="0.2">${name.toUpperCase()}</text>
+      <path d="M 74 148 L 126 148 L 122 162 L 78 162 Z" fill="#A3E635"/>
+      <text x="100" y="159" font-family="'Chakra Petch',sans-serif" font-weight="700" font-size="9" fill="#0A0C0A" text-anchor="middle" letter-spacing="0.5">${dose}</text>
+      <text x="100" y="176" font-family="'Inter',sans-serif" font-weight="700" font-size="5" fill="#8B9680" text-anchor="middle" letter-spacing="0.3">FOR RESEARCH USE ONLY</text>
+      <text x="100" y="184" font-family="'Inter',sans-serif" font-weight="400" font-size="4.3" fill="#5A6B4A" text-anchor="middle">NOT FOR HUMAN CONSUMPTION</text>
+      <line x1="66" y1="192" x2="134" y2="192" stroke="#2A3320" stroke-width="0.6"/>
+      <text x="100" y="202" font-family="'Inter',sans-serif" font-weight="600" font-size="4.5" fill="#8B9680" text-anchor="middle" letter-spacing="0.2">❄ REFRIGERATE 2–8°C</text>
+      <circle cx="84" cy="210" r="1.8" fill="none" stroke="#A3E635" stroke-width="0.7"/>
+      <circle cx="100" cy="210" r="1.8" fill="none" stroke="#A3E635" stroke-width="0.7"/>
+      <circle cx="116" cy="210" r="1.8" fill="none" stroke="#A3E635" stroke-width="0.7"/>
+    </svg>`;
+  }
+
+  // ── FILTERS ──
+  const filterEl = document.getElementById('filters');
+  function buildFilters() {
+    CATS = ["All", ...new Set(PRODUCTS.map(p => p.cat))];
+    activeFilter = "All";
+    filterEl.innerHTML = '';
+    CATS.forEach((c,i) => {
+      const b = document.createElement('button');
+      b.className = 'filter' + (i===0?' active':'');
+      b.textContent = c;
+      b.onclick = () => { activeFilter = c; document.querySelectorAll('.filter').forEach(f=>f.classList.remove('active')); b.classList.add('active'); renderGrid(); };
+      filterEl.appendChild(b);
     });
-    const data = await res.json().catch(()=>({}));
-    return { ok: res.ok && data.ok, data };
   }
+  buildFilters();
 
-  // ---------- LOGIN ----------
-  function showReset(on){
-    document.getElementById('login').style.display = on ? 'none' : 'block';
-    document.getElementById('reset').style.display = on ? 'block' : 'none';
-  }
-
-  async function doLogin(){
-    const pw = document.getElementById('pw').value;
-    const msg = document.getElementById('loginMsg');
-    const btn = document.getElementById('loginBtn');
-    msg.className = 'msg';
-    if(!pw){ msg.textContent='Enter your password.'; msg.className='msg err'; return; }
-    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
-    try{
-      const { ok, data } = await auth({ action:'login', password: pw });
-      if(ok){
-        PASSWORD = pw;
-        document.getElementById('login').style.display='none';
-        document.getElementById('editor').style.display='block';
-        await loadCatalog();
-      } else {
-        msg.textContent = data.error || 'Wrong password.'; msg.className='msg err';
-      }
-    }catch(e){
-      msg.textContent = 'Could not reach the server. Is the site deployed on Netlify?'; msg.className='msg err';
-    }finally{
-      btn.disabled = false; btn.textContent = 'Unlock';
-    }
-  }
-
-  async function doReset(){
-    const rc = document.getElementById('rc').value.trim();
-    const np = document.getElementById('rnew').value;
-    const msg = document.getElementById('resetMsg');
-    const btn = document.getElementById('resetBtn');
-    msg.className = 'msg';
-    if(!rc || !np){ msg.textContent='Enter your recovery code and a new password.'; msg.className='msg err'; return; }
-    if(np.length < 8){ msg.textContent='New password must be at least 8 characters.'; msg.className='msg err'; return; }
-    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
-    try{
-      const { ok, data } = await auth({ action:'reset', recovery: rc, newPassword: np });
-      if(ok){
-        msg.textContent = '✓ Password updated. You can log in with it now.'; msg.className='msg ok';
-        setTimeout(()=>{ showReset(false); document.getElementById('pw').value=np; }, 1200);
-      } else {
-        msg.textContent = data.error || 'Reset failed.'; msg.className='msg err';
-      }
-    }catch(e){
-      msg.textContent='Could not reach the server.'; msg.className='msg err';
-    }finally{
-      btn.disabled=false; btn.textContent='Set new password';
-    }
-  }
-
-  // ---------- ACCOUNT ----------
-  function openAccount(){ document.getElementById('acctOv').classList.add('open'); loadPaymentStatus(); }
-  function closeAccount(){
-    document.getElementById('acctOv').classList.remove('open');
-    ['ac_cur','ac_new','ac_rcpw','ac_rc','pay_token','pay_loc'].forEach(id=>document.getElementById(id).value='');
-    ['ac_pwMsg','ac_rcMsg','pay_msg'].forEach(id=>{ const m=document.getElementById(id); m.className='msg'; m.textContent=''; });
-  }
-
-  async function loadPaymentStatus(){
-    const el = document.getElementById('pay_status');
-    try{
-      const { ok, data } = await auth({ action:'payment-status', password: PASSWORD });
-      if(!ok){ el.textContent = 'Could not load payment status.'; return; }
-      if(data.source === 'none'){
-        el.innerHTML = '<b style="color:var(--amber)">Not connected.</b> Add your Square account below to take payments.';
-      } else {
-        const where = data.source === 'admin' ? 'saved here' : 'from Netlify';
-        el.innerHTML = `<b style="color:var(--lime)">Connected</b> (${where}) · Location <code>${data.locationId}</code> · ${data.env} · token …${data.last4}`;
-        document.getElementById('pay_loc').placeholder = data.locationId;
-        document.getElementById('pay_env').value = data.env;
-      }
-    }catch(e){ el.textContent = 'Could not load payment status.'; }
-  }
-
-  async function savePayment(){
-    const token=document.getElementById('pay_token').value.trim();
-    const loc=document.getElementById('pay_loc').value.trim();
-    const env=document.getElementById('pay_env').value;
-    const msg=document.getElementById('pay_msg'); msg.className='msg';
-    if(!token||!loc){ msg.textContent='Enter your Square access token and location ID.'; msg.className='msg err'; return; }
-    if(env==='production' && !confirm('Save LIVE Square settings? Real customer payments will go to this account.')) return;
-    const { ok, data } = await auth({ action:'save-payment', password: PASSWORD, accessToken:token, locationId:loc, env });
-    if(ok){
-      msg.textContent='✓ Square account connected.'; msg.className='msg ok';
-      document.getElementById('pay_token').value=''; document.getElementById('pay_loc').value='';
-      loadPaymentStatus();
-    } else { msg.textContent=data.error||'Could not save.'; msg.className='msg err'; }
-  }
-  async function changePassword(){
-    const cur=document.getElementById('ac_cur').value, np=document.getElementById('ac_new').value;
-    const msg=document.getElementById('ac_pwMsg'); msg.className='msg';
-    if(!cur||!np){ msg.textContent='Fill in both fields.'; msg.className='msg err'; return; }
-    if(np.length<8){ msg.textContent='New password must be at least 8 characters.'; msg.className='msg err'; return; }
-    const { ok, data } = await auth({ action:'change-password', password:cur, newPassword:np });
-    if(ok){ PASSWORD=np; msg.textContent='✓ Password updated.'; msg.className='msg ok';
-      document.getElementById('ac_cur').value=''; document.getElementById('ac_new').value=''; }
-    else { msg.textContent=data.error||'Could not update.'; msg.className='msg err'; }
-  }
-  async function changeRecovery(){
-    const pw=document.getElementById('ac_rcpw').value, nc=document.getElementById('ac_rc').value.trim();
-    const msg=document.getElementById('ac_rcMsg'); msg.className='msg';
-    if(!pw||!nc){ msg.textContent='Fill in both fields.'; msg.className='msg err'; return; }
-    if(nc.length<6){ msg.textContent='Recovery code must be at least 6 characters.'; msg.className='msg err'; return; }
-    const { ok, data } = await auth({ action:'change-recovery', password:pw, newRecovery:nc });
-    if(ok){ msg.textContent='✓ Recovery code updated. Store it somewhere safe.'; msg.className='msg ok';
-      document.getElementById('ac_rcpw').value=''; document.getElementById('ac_rc').value=''; }
-    else { msg.textContent=data.error||'Could not update.'; msg.className='msg err'; }
-  }
-
-  // ---------- LOAD ----------
-  async function loadCatalog(){
-    try{
-      const res = await fetch(API_GET, { cache:'no-store' });
-      const data = await res.json();
-      products = Array.isArray(data.products) ? data.products : [];
-      bios = (data.bios && typeof data.bios==='object') ? data.bios : {};
-      products.forEach(ensureSizes);
-    }catch(e){
-      products = []; bios = {};
-    }
-    render();
-  }
-
-  // ---------- RENDER ----------
-  function esc(s){ return String(s==null?'':s).replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-  function render(){
-    const list = document.getElementById('list');
-    document.getElementById('count').textContent = products.length + ' products';
-    list.innerHTML = products.map((p, i) => {
-      const bio = bios[p.name] || '';
-      const opts = STATUSES.map(([v,l]) => `<option value="${v}" ${p.status===v?'selected':''}>${l}</option>`).join('');
-      const sizes = ensureSizes(p);
-      const sizeRows = sizes.map((s, si) => `
-        <div class="sizerow">
-          <input class="s-label" value="${esc(s.label)}" oninput="updSize(${i},${si},'label',this.value)" placeholder="e.g. 10mg">
-          <div class="s-price"><span>$</span><input type="number" step="0.01" min="0" value="${esc(s.price)}" oninput="updSize(${i},${si},'price',this.value)" placeholder="0.00"></div>
-          <button class="danger xbtn" title="Remove size" onclick="removeSize(${i},${si})">✕</button>
-        </div>`).join('');
+  // ── GRID ──
+  function renderGrid() {
+    const grid = document.getElementById('grid');
+    const base = activeFilter==="All" ? PRODUCTS : PRODUCTS.filter(p=>p.cat===activeFilter);
+    // Show products alphabetically by name.
+    const list = [...base].sort((a,b)=>String(a.name).localeCompare(String(b.name), undefined, {numeric:true, sensitivity:'base'}));
+    grid.innerHTML = list.map(p => {
+      const S = sizesOf(p);
+      const multi = S.length > 1;
+      const sizeCtrl = multi
+        ? `<select class="size-sel" id="size-${p.id}" onchange="onSizeChange(${p.id})" aria-label="Vial size for ${p.name}">
+             ${S.map((s,idx)=>`<option value="${idx}">${s.label} — $${s.price.toFixed(2)}</option>`).join('')}
+           </select>`
+        : (S[0].label ? `<span class="size-single">${S[0].label}</span>` : '');
       return `
-      <div class="card ${p.status==='restock'?'out':''}" data-i="${i}">
-        <div class="cardhead">
-          <span class="idx">#${i+1}</span>
-          <button class="danger" onclick="removeProduct(${i})">Delete</button>
+      <div class="card">
+        <div class="card-top">
+          <span class="lot">${p.lot}</span>
+          <span class="badge ${p.status}">${badgeLabel[p.status]}</span>
         </div>
-        <div class="grid3">
-          <div><label>Product name</label><input value="${esc(p.name)}" oninput="upd(${i},'name',this.value)"></div>
-          <div><label>Category</label><input value="${esc(p.cat)}" oninput="upd(${i},'cat',this.value)" list="cats"></div>
-          <div><label>Status</label><select onchange="upd(${i},'status',this.value)">${opts}</select></div>
-        </div>
-        <div class="sizes">
-          <label>Vial sizes &amp; prices</label>
-          <div class="sizelist">${sizeRows}</div>
-          <button class="addsize" onclick="addSize(${i})">+ Add another size</button>
-          <div class="hint">Each size is a separate option the customer picks. Add a 2nd, 3rd… size to offer choices (e.g. 5mg / 10mg).</div>
-        </div>
-        <div class="grid2">
-          <div><label>Purity / description line</label><input value="${esc(p.spec)}" oninput="upd(${i},'spec',this.value)" placeholder="≥99% HPLC"></div>
-          <div><label>Lot number</label><input value="${esc(p.lot)}" oninput="upd(${i},'lot',this.value)" placeholder="SMG-XXX-01"></div>
-          <div><label>Image file</label><input value="${esc(p.img)}" oninput="upd(${i},'img',this.value)" placeholder="tirzepatide"><div class="hint">File name in /images without .png. Blank = branded vial.</div></div>
-        </div>
-        <div class="full">
-          <label>Description (optional)</label>
-          <textarea rows="2" oninput="updBio(${i},this.value)" placeholder="Research description shown on the product card…">${esc(bio)}</textarea>
+        <div class="vial">${p.img ? `<img class="vial-photo${p.imgFrame?' framed':''}" src="images/${p.img}.png" alt="${p.name}" loading="lazy" data-name="${String(p.name).replace(/"/g,'&quot;')}" data-spec="${String(p.spec).replace(/"/g,'&quot;')}" onerror="vialFallback(this)">` : brandedVial(p.name, doseFrom(p.spec))}<span class="cat-tag">${p.cat}</span></div>
+        <h3>${p.name}</h3>
+        <div class="spec">${p.spec}</div>
+        ${BIOS[p.name] ? `<p class="bio">${BIOS[p.name]}</p>` : ''}
+        ${sizeCtrl ? `<div class="size-row">${multi ? `<label class="size-lbl">Vial size</label>` : ''}${sizeCtrl}</div>` : ''}
+        <div class="card-foot">
+          <div class="price" id="price-${p.id}">$${S[0].price.toFixed(2)}</div>
+          ${p.status==="restock"
+            ? `<button class="add notify" onclick="notifyMe('${p.name}')">Notify</button>`
+            : `<button class="add" onclick="addToCart(${p.id})">Add +</button>`}
         </div>
       </div>`;
     }).join('');
-    // datalist of categories for quick reuse
-    if(!document.getElementById('cats')){
-      const dl = document.createElement('datalist'); dl.id='cats'; document.body.appendChild(dl);
-    }
-    const cats = [...new Set(products.map(p=>p.cat).filter(Boolean))];
-    document.getElementById('cats').innerHTML = cats.map(c=>`<option value="${esc(c)}">`).join('');
   }
 
-  // ---------- EDIT STATE ----------
-  function upd(i, field, val){
-    if(field==='name'){
-      // keep the bio keyed to the (possibly new) name
-      const oldName = products[i].name;
-      if(bios[oldName] !== undefined && val !== oldName){
-        bios[val] = bios[oldName]; delete bios[oldName];
-      }
-    }
-    products[i][field] = val;
-    if(field==='status'){ // reflect the dimmed "out" style live
-      const card = document.querySelector(`.card[data-i="${i}"]`);
-      if(card) card.classList.toggle('out', val==='restock');
-    }
-  }
-  function updBio(i, val){ bios[products[i].name] = val; }
-
-  // ---------- SIZES ----------
-  function ensureSizes(p){
-    if(!Array.isArray(p.sizes) || !p.sizes.length){
-      p.sizes = [{ label:'', price: (parseFloat(p.price)||0) }];
-    }
-    return p.sizes;
-  }
-  function updSize(i, si, field, val){
-    const s = products[i].sizes[si]; if(!s) return;
-    s[field] = val;
-  }
-  function addSize(i){
-    ensureSizes(products[i]);
-    products[i].sizes.push({ label:'', price:0 });
-    render();
-  }
-  function removeSize(i, si){
-    if(products[i].sizes.length <= 1){ alert('Each product needs at least one size.'); return; }
-    products[i].sizes.splice(si, 1);
-    render();
+  // If a product photo is missing, swap in the SMG branded vial instead of a broken image.
+  function vialFallback(img){
+    try {
+      const name = img.getAttribute('data-name') || '';
+      const spec = img.getAttribute('data-spec') || '';
+      img.outerHTML = brandedVial(name, doseFrom(spec));
+    } catch(e) { img.style.display = 'none'; }
   }
 
-  function addProduct(){
-    const maxId = products.reduce((m,p)=>Math.max(m, parseInt(p.id,10)||0), 0);
-    products.unshift({ id:maxId+1, cat:'', name:'New Product', spec:'', status:'stock', lot:'', img:'', sizes:[{label:'',price:0}] });
-    render();
-    window.scrollTo({top:0, behavior:'smooth'});
-  }
-  function removeProduct(i){
-    if(!confirm('Delete "'+(products[i].name||'this product')+'"?')) return;
-    const name = products[i].name;
-    products.splice(i,1);
-    // if no other product uses that bio name, drop it
-    if(!products.some(p=>p.name===name)) delete bios[name];
-    render();
+  // Update a card's shown price when its size dropdown changes.
+  function onSizeChange(id){
+    const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
+    const S = sizesOf(p);
+    const sel = document.getElementById('size-'+id);
+    const idx = sel ? (parseInt(sel.value,10)||0) : 0;
+    const el = document.getElementById('price-'+id);
+    if(el) el.textContent = '$'+((S[idx]||S[0]).price).toFixed(2);
   }
 
-  // ---------- SAVE ----------
-  async function saveAll(){
-    const btn = document.getElementById('saveBtn');
-    const msg = document.getElementById('saveMsg');
-    msg.className='msg';
-    // trim empty-named products
-    const clean = products.filter(p => (p.name||'').trim());
-    // keep only bios that match a product name
-    const names = new Set(clean.map(p=>p.name));
-    const bioOut = {};
-    Object.keys(bios).forEach(k=>{ if(names.has(k) && (bios[k]||'').trim()) bioOut[k]=bios[k]; });
+  // ── CART ──
+  // Cart items are keyed by product id + size, so each vial size is its own line.
+  function addToCart(id) {
+    const p = PRODUCTS.find(x=>x.id===id);
+    if(!p) return;
+    const S = sizesOf(p);
+    const sel = document.getElementById('size-'+id);
+    const idx = sel ? (parseInt(sel.value,10)||0) : 0;
+    const size = S[idx] || S[0];
+    const key = id + '|' + (size.label||'');
+    const ex = cart.find(x=>x.key===key);
+    if (ex) ex.qty++;
+    else cart.push({ key, id, name:p.name, sizeLabel:size.label||'', price:size.price, lot:p.lot, qty:1 });
+    updateCart(); bump(); openCart();
+  }
+  function changeQty(key,d){ const it=cart.find(x=>x.key===key); if(!it)return; it.qty+=d; if(it.qty<=0)cart=cart.filter(x=>x.key!==key); updateCart(); }
+  function removeItem(key){ cart=cart.filter(x=>x.key!==key); updateCart(); }
+  function total(){ return cart.reduce((s,i)=>s+i.price*i.qty,0); }
 
-    btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Saving';
-    try{
-      const res = await fetch(API_SAVE, {
+  function updateCart(){
+    const n = cart.reduce((s,i)=>s+i.qty,0);
+    document.getElementById('badge').textContent = n;
+    document.getElementById('cartTotal').textContent = '$'+total().toFixed(2);
+    document.getElementById('checkoutBtn').disabled = cart.length===0;
+
+    const remaining = FREE_SHIP - total();
+    const note = document.getElementById('shipNote');
+    note.textContent = remaining>0 ? `Add $${remaining.toFixed(2)} for free shipping` : '✓ You qualify for free shipping';
+    note.style.color = remaining>0 ? 'var(--muted)' : 'var(--lime)';
+
+    const el = document.getElementById('cartItems');
+    if(!cart.length){ el.innerHTML = `<div class="empty"><div class="hexbig"></div>Your cart is empty</div>`; return; }
+    el.innerHTML = cart.map(i=>`
+      <div class="ci">
+        <div class="ci-icon">${iconSVG}</div>
+        <div class="ci-info">
+          <div class="ci-name">${i.name}${i.sizeLabel?` · ${i.sizeLabel}`:''}</div>
+          <div class="ci-price">$${i.price.toFixed(2)} · ${i.lot}</div>
+        </div>
+        <div class="ci-ctrl">
+          <button class="q" onclick="changeQty('${i.key}',-1)">−</button>
+          <span class="qn">${i.qty}</span>
+          <button class="q" onclick="changeQty('${i.key}',1)">+</button>
+          <button class="rm" onclick="removeItem('${i.key}')" title="Remove">✕</button>
+        </div>
+      </div>`).join('');
+  }
+  function bump(){ const b=document.getElementById('badge'); b.classList.add('bump'); setTimeout(()=>b.classList.remove('bump'),300); }
+
+  function openCart(){ document.getElementById('ov').classList.add('open'); document.getElementById('drawer').classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeCart(){ document.getElementById('ov').classList.remove('open'); document.getElementById('drawer').classList.remove('open'); document.body.style.overflow=''; }
+
+  function notifyMe(name){ alert(`We'll alert you when ${name} is back in stock. Add your email in the Batch Alerts section below.`); location.hash='#alerts'; }
+
+  // ── FULFILLMENT + PROMO ──
+  const DELIVERY_FEE = 10.00;
+  let fulfillment = 'pickup';   // 'pickup' or 'delivery'
+
+  function setFulfill(mode){
+    fulfillment = mode;
+    document.querySelectorAll('.ff-opt').forEach(b=>b.classList.toggle('active', b.dataset.ff===mode));
+    document.getElementById('pickupNote').style.display = mode==='pickup' ? 'block' : 'none';
+    buildSummary();
+  }
+
+  function grandTotal(){
+    let t = total();
+    if(fulfillment==='delivery') t += DELIVERY_FEE;
+    return Math.max(0, t);
+  }
+
+  // ── CHECKOUT ──
+  function openCheckout(){
+    closeCart(); buildSummary();
+    document.getElementById('modalOv').classList.add('open');
+    document.body.style.overflow='hidden';
+    setTimeout(()=>document.getElementById('cName').focus(),100);
+  }
+  function closeCheckout(){ document.getElementById('modalOv').classList.remove('open'); document.body.style.overflow=''; }
+  function buildSummary(){
+    const rows = cart.map(i=>`<div class="oi"><span>${i.name}${i.sizeLabel?` ${i.sizeLabel}`:''} × ${i.qty}</span><span>$${(i.price*i.qty).toFixed(2)}</span></div>`).join('');
+    let extra = `<div class="oi"><span>Subtotal</span><span>$${total().toFixed(2)}</span></div>`;
+    if(fulfillment==='delivery') extra += `<div class="oi"><span>Delivery / Mail</span><span>+$${DELIVERY_FEE.toFixed(2)}</span></div>`;
+    else extra += `<div class="oi"><span>Gym Pickup</span><span>Free</span></div>`;
+    document.getElementById('osum').innerHTML =
+      `<div class="ot">Order Summary</div>${rows}<hr>${extra}<hr>` +
+      `<div class="otot"><span>Total</span><span class="lime">$${grandTotal().toFixed(2)}</span></div>`;
+  }
+
+  async function submitInvoice(){
+    const nameEl=document.getElementById('cName'), emailEl=document.getElementById('cEmail'), errEl=document.getElementById('errMsg');
+    const name=nameEl.value.trim(), email=emailEl.value.trim();
+    nameEl.classList.remove('bad'); emailEl.classList.remove('bad'); errEl.style.display='none';
+    let ok=true;
+    if(!name){ nameEl.classList.add('bad'); ok=false; }
+    if(!email||!email.includes('@')){ emailEl.classList.add('bad'); ok=false; }
+    if(!ok){ errEl.textContent='Please enter your name and a valid email.'; errEl.style.display='block'; return; }
+
+    const btn=document.getElementById('sendBtn'), lbl=document.getElementById('sendLabel');
+    btn.disabled=true; lbl.innerHTML='<span class="spinner"></span>';
+
+    // Build line items: products (with vial size) + delivery fee
+    const items = cart.map(i=>({name:i.name + (i.sizeLabel?` (${i.sizeLabel})`:''), price:i.price, qty:i.qty}));
+    if(fulfillment==='delivery') items.push({name:'Delivery / Mail', price:DELIVERY_FEE, qty:1});
+
+    try {
+      const res = await fetch('/.netlify/functions/create-invoice',{
         method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ password: PASSWORD, products: clean, bios: bioOut })
+        body: JSON.stringify({
+          name, email, items,
+          fulfillment
+        })
       });
-      const data = await res.json().catch(()=>({}));
-      if(res.ok && data.success){
-        msg.textContent = '✓ Saved '+data.count+' products. Your store is updating now.'; msg.className='msg ok';
-      }else{
-        msg.textContent = data.error || 'Save failed.'; msg.className='msg err';
-      }
-    }catch(e){
-      msg.textContent='Could not reach the server.'; msg.className='msg err';
-    }finally{
-      btn.disabled=false; btn.textContent='Save all changes';
-      setTimeout(()=>{ msg.className='msg'; }, 6000);
+      const data = await res.json();
+      if(!res.ok || data.error) throw new Error((data.error || 'Something went wrong.') + (data.detail ? ' — ' + data.detail : ''));
+      document.getElementById('successEmail').textContent = email;
+      document.getElementById('formState').style.display='none';
+      document.getElementById('successState').style.display='block';
+    } catch(err){
+      errEl.textContent = err.message; errEl.style.display='block';
+      btn.disabled=false; lbl.textContent='Send Invoice';
     }
   }
+  function resetAll(){
+    cart=[]; updateCart(); closeCheckout();
+    document.getElementById('formState').style.display='block';
+    document.getElementById('successState').style.display='none';
+    document.getElementById('cName').value=''; document.getElementById('cEmail').value='';
+    setFulfill('pickup');
+    document.getElementById('sendBtn').disabled=false; document.getElementById('sendLabel').textContent='Send Invoice';
+    document.getElementById('errMsg').style.display='none';
+  }
+
+  function subscribe(){
+    const e=document.getElementById('nlEmail');
+    if(!e.value.includes('@')){ e.style.borderColor='var(--amber)'; return; }
+    e.style.borderColor='var(--lime)'; e.value=''; e.placeholder='✓ Subscribed to batch alerts';
+  }
+
+  // ── FAQ ──
+  const FAQS = [
+    ["What is the intended use-case for these compounds?","All SMG Performance Labs products are supplied strictly for in-vitro laboratory and research applications. They are not intended for human or animal consumption, and no medical or therapeutic claims are made."],
+    ["How do I pull a Certificate of Analysis?","Every vial carries a unique lot number. That lot maps to its own COA showing measured purity, identity, and molecular weight. Scan the QR code on the label or request the lot's certificate directly from us."],
+    ["What is your analytical release threshold?","Compounds are released against a minimum HPLC purity threshold of 99.1%. Any batch that does not meet spec is rejected before it reaches inventory."],
+    ["What does shipping look like?","Orders placed before 2PM CT dispatch same-day. Compounds ship refrigerated and discreetly packed. Free shipping applies to orders over $175."],
+    ["Do you offer wholesale or institutional pricing?","Yes. Research institutions and volume buyers can reach out through the Wholesale section for tiered pricing and dedicated support."],
+    ["What is your refund and replacement policy?","If a vial arrives damaged or fails to match its COA, we replace it. Because these are sensitive research materials, opened vials follow our published returns policy."],
+  ];
+  const faqList = document.getElementById('faqList');
+  FAQS.forEach(([q,a])=>{
+    const item=document.createElement('div'); item.className='faq-item';
+    item.innerHTML = `<button class="faq-q"><span>${q}</span><span class="ic">+</span></button><div class="faq-a"><p>${a}</p></div>`;
+    const btn=item.querySelector('.faq-q'), ans=item.querySelector('.faq-a');
+    btn.onclick=()=>{ const open=item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(f=>{f.classList.remove('open'); f.querySelector('.faq-a').style.maxHeight=null;});
+      if(!open){ item.classList.add('open'); ans.style.maxHeight=ans.scrollHeight+'px'; }
+    };
+    faqList.appendChild(item);
+  });
+
+  // ── STAT COUNT-UP ──
+  const statObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const el=e.target, target=+el.dataset.target, prefix=el.dataset.prefix||'';
+        let cur=0; const inc=target/45;
+        const t=setInterval(()=>{ cur+=inc; if(cur>=target){cur=target; clearInterval(t);} el.textContent=prefix+Math.floor(cur); },18);
+        statObserver.unobserve(el);
+      }
+    });
+  },{threshold:0.5});
+  document.querySelectorAll('.stat .num').forEach(n=>statObserver.observe(n));
+
+  // ── HEADER SCROLL ──
+  window.addEventListener('scroll',()=>{ document.getElementById('hdr').classList.toggle('scrolled', window.scrollY>20); });
+
+  // ── AGE GATE ──
+  function enterSite(){ sessionStorage.setItem('smg_age_ok','1'); document.getElementById('ageGate').classList.add('hide'); document.body.style.overflow=''; }
+  if(sessionStorage.getItem('smg_age_ok')==='1'){ document.getElementById('ageGate').classList.add('hide'); }
+  else { document.body.style.overflow='hidden'; }
+
+  // INIT — load the admin-managed catalog, then render.
+  // If the fetch fails for any reason, we keep the built-in list above,
+  // so the store always shows products.
+  async function loadProducts() {
+    try {
+      const res = await fetch('/.netlify/functions/get-products', { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.products) && data.products.length) {
+          PRODUCTS = data.products;
+          if (data.bios && typeof data.bios === 'object') BIOS = data.bios;
+          buildFilters();
+        }
+      }
+    } catch (e) { /* keep built-in defaults */ }
+    renderGrid(); updateCart();
+  }
+  loadProducts();
 </script>
 </body>
 </html>
