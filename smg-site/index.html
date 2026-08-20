@@ -247,6 +247,8 @@
   }
   .vial svg.bottle { height: 190px; width: auto; opacity: 1; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.5)); }
   .vial-photo { height: 210px; width: auto; object-fit: contain; mix-blend-mode: normal; filter: drop-shadow(0 10px 18px rgba(0,0,0,0.55)); }
+  /* clear-glass product photos (e.g. Hospira water, PBS) sit on a clean white card */
+  .vial-photo.framed { height: 190px; background: #fff; padding: 10px 16px; border-radius: 10px; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.45)); }
   .vial .cat-tag {
     position: absolute; bottom: 10px; left: 10px; z-index: 2;
     font-family:'JetBrains Mono',monospace; font-size: 10px; color: var(--muted);
@@ -803,6 +805,9 @@
     { id:33, cat:"Supplies",      name:"Acetic Acid Water",     spec:"Sterile diluent",              price:9.99,  status:"stock", lot:"SMG-ACE-01", img:"acetic-acid-water" },
     { id:34, cat:"Supplies",      name:"Sharps Container",      spec:"Puncture-resistant",           price:9.99,  status:"stock", lot:"SMG-SHP-01", img:"sharps-container" },
     { id:35, cat:"Supplies",      name:"Research Kit",          spec:"Sharps + vial + syringes + pads", price:24.99, status:"stock", lot:"SMG-KIT-01", img:"research-kit" },
+    { id:36, cat:"Supplies",      name:"PBS",                   spec:"Phosphate Buffered Saline 1×", price:11.99, status:"stock", lot:"SMG-PBS-01", img:"pbs", imgFrame:true },
+    { id:37, cat:"Metabolic",     name:"MIC + B12",             spec:"Lipotropic Blend · ≥99% HPLC", price:44.99, status:"stock", lot:"SMG-MIC-01", img:"mic-b12" },
+    { id:38, cat:"Supplies",      name:"Hospira Water",         spec:"Bacteriostatic Water · USP",   price:24.99, status:"stock", lot:"SMG-HOS-01", img:"hospira-water", imgFrame:true },
   ];
 
   // Product bios (research descriptions). Owner can edit/add freely.
@@ -842,6 +847,9 @@
     "Acetic Acid Water": "Dilute acetic acid solution used as a reconstitution diluent for peptides with poor solubility in bacteriostatic water. Supports laboratory preparation under sterile technique.",
     "Sharps Container": "A puncture-resistant biohazard container for the safe disposal of used needles and syringes in a research setting. Supports secure, compliant sharps handling.",
     "Research Kit": "An all-in-one research starter kit — includes a puncture-resistant sharps container, a research solution vial, insulin syringes, and 70% isopropyl alcohol prep pads. Everything needed for clean, compliant laboratory handling.",
+    "PBS": "Phosphate Buffered Saline (1×, pH 7.4) — a sterile, isotonic buffer widely used as a diluent and wash solution in laboratory research. Endotoxin level < 0.5 EU/mL.",
+    "MIC + B12": "A lipotropic research blend combining Methionine, Inositol, Choline (MIC) with Vitamin B12 (Cobalamin). Studied in laboratory settings for its role in metabolic signaling, lipid-metabolism pathways, methylation, and cellular energy processes.",
+    "Hospira Water": "Hospira 30mL multi-dose bacteriostatic water (0.9% benzyl alcohol) for injection, USP — a sterile diluent used to reconstitute lyophilized research compounds under sterile technique.",
   };
 
   let CATS = ["All", ...new Set(PRODUCTS.map(p => p.cat))];
@@ -947,7 +955,7 @@
           <span class="lot">${p.lot}</span>
           <span class="badge ${p.status}">${badgeLabel[p.status]}</span>
         </div>
-        <div class="vial">${p.img ? `<img class="vial-photo" src="images/${p.img}.png" alt="${p.name}" loading="lazy" data-name="${String(p.name).replace(/"/g,'&quot;')}" data-spec="${String(p.spec).replace(/"/g,'&quot;')}" onerror="vialFallback(this)">` : brandedVial(p.name, doseFrom(p.spec))}<span class="cat-tag">${p.cat}</span></div>
+        <div class="vial">${p.img ? `<img class="vial-photo${p.imgFrame?' framed':''}" src="images/${p.img}.png" alt="${p.name}" loading="lazy" data-name="${String(p.name).replace(/"/g,'&quot;')}" data-spec="${String(p.spec).replace(/"/g,'&quot;')}" onerror="vialFallback(this)">` : brandedVial(p.name, doseFrom(p.spec))}<span class="cat-tag">${p.cat}</span></div>
         <h3>${p.name}</h3>
         <div class="spec">${p.spec}</div>
         ${BIOS[p.name] ? `<p class="bio">${BIOS[p.name]}</p>` : ''}
