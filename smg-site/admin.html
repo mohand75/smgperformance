@@ -207,13 +207,28 @@
   let products = [];
   let bios = {};
 
+  // Turn any failure into a message worth reading. A crashed function replies with
+  // {errorType, errorMessage} instead of our {error}, which used to get swallowed
+  // and shown as "Wrong password."
+  function errText(data, res){
+    if(data && data.error) return data.error;
+    if(data && data.errorMessage){
+      if(/Blobs/i.test(data.errorType || data.errorMessage))
+        return 'Storage is not connected yet. In Netlify → Site configuration → Environment variables, add NETLIFY_SITE_ID and NETLIFY_BLOBS_TOKEN (same value for all deploy contexts).';
+      return 'Server error: ' + data.errorMessage;
+    }
+    if(res && res.status === 404) return 'The admin function is not deployed. Check the Netlify functions directory.';
+    if(res && !res.ok) return 'Server returned ' + res.status + '.';
+    return '';
+  }
+
   async function auth(payload){
     const res = await fetch(API_AUTH, {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     });
     const data = await res.json().catch(()=>({}));
-    return { ok: res.ok && data.ok, data };
+    return { ok: res.ok && data.ok, data, err: errText(data, res) };
   }
 
   // ---------- LOGIN ----------
@@ -230,14 +245,14 @@
     if(!pw){ msg.textContent='Enter your password.'; msg.className='msg err'; return; }
     btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
     try{
-      const { ok, data } = await auth({ action:'login', password: pw });
+      const { ok, data, err } = await auth({ action:'login', password: pw });
       if(ok){
         PASSWORD = pw;
         document.getElementById('login').style.display='none';
         document.getElementById('editor').style.display='block';
         await loadCatalog();
       } else {
-        msg.textContent = data.error || 'Wrong password.'; msg.className='msg err';
+        msg.textContent = err || 'Wrong password.'; msg.className='msg err';
       }
     }catch(e){
       msg.textContent = 'Could not reach the server. Is the site deployed on Netlify?'; msg.className='msg err';
@@ -256,12 +271,12 @@
     if(np.length < 8){ msg.textContent='New password must be at least 8 characters.'; msg.className='msg err'; return; }
     btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
     try{
-      const { ok, data } = await auth({ action:'reset', recovery: rc, newPassword: np });
+      const { ok, data, err } = await auth({ action:'reset', recovery: rc, newPassword: np });
       if(ok){
         msg.textContent = '✓ Password updated. You can log in with it now.'; msg.className='msg ok';
         setTimeout(()=>{ showReset(false); document.getElementById('pw').value=np; }, 1200);
       } else {
-        msg.textContent = data.error || 'Reset failed.'; msg.className='msg err';
+        msg.textContent = err || 'Reset failed.'; msg.className='msg err';
       }
     }catch(e){
       msg.textContent='Could not reach the server.'; msg.className='msg err';
@@ -281,7 +296,7 @@
   async function loadPaymentStatus(){
     const el = document.getElementById('pay_status');
     try{
-      const { ok, data } = await auth({ action:'payment-status', password: PASSWORD });
+      const { ok, data, err } = await auth({ action:'payment-status', password: PASSWORD });
       if(!ok){ el.textContent = 'Could not load payment status.'; return; }
       if(data.source === 'none'){
         el.innerHTML = '<b style="color:var(--amber)">Not connected.</b> Add your Square account below to take payments.';
@@ -301,32 +316,32 @@
     const msg=document.getElementById('pay_msg'); msg.className='msg';
     if(!token||!loc){ msg.textContent='Enter your Square access token and location ID.'; msg.className='msg err'; return; }
     if(env==='production' && !confirm('Save LIVE Square settings? Real customer payments will go to this account.')) return;
-    const { ok, data } = await auth({ action:'save-payment', password: PASSWORD, accessToken:token, locationId:loc, env });
+    const { ok, data, err } = await auth({ action:'save-payment', password: PASSWORD, accessToken:token, locationId:loc, env });
     if(ok){
       msg.textContent='✓ Square account connected.'; msg.className='msg ok';
       document.getElementById('pay_token').value=''; document.getElementById('pay_loc').value='';
       loadPaymentStatus();
-    } else { msg.textContent=data.error||'Could not save.'; msg.className='msg err'; }
+    } else { msg.textContent=err||'Could not save.'; msg.className='msg err'; }
   }
   async function changePassword(){
     const cur=document.getElementById('ac_cur').value, np=document.getElementById('ac_new').value;
     const msg=document.getElementById('ac_pwMsg'); msg.className='msg';
     if(!cur||!np){ msg.textContent='Fill in both fields.'; msg.className='msg err'; return; }
     if(np.length<8){ msg.textContent='New password must be at least 8 characters.'; msg.className='msg err'; return; }
-    const { ok, data } = await auth({ action:'change-password', password:cur, newPassword:np });
+    const { ok, data, err } = await auth({ action:'change-password', password:cur, newPassword:np });
     if(ok){ PASSWORD=np; msg.textContent='✓ Password updated.'; msg.className='msg ok';
       document.getElementById('ac_cur').value=''; document.getElementById('ac_new').value=''; }
-    else { msg.textContent=data.error||'Could not update.'; msg.className='msg err'; }
+    else { msg.textContent=err||'Could not update.'; msg.className='msg err'; }
   }
   async function changeRecovery(){
     const pw=document.getElementById('ac_rcpw').value, nc=document.getElementById('ac_rc').value.trim();
     const msg=document.getElementById('ac_rcMsg'); msg.className='msg';
     if(!pw||!nc){ msg.textContent='Fill in both fields.'; msg.className='msg err'; return; }
     if(nc.length<6){ msg.textContent='Recovery code must be at least 6 characters.'; msg.className='msg err'; return; }
-    const { ok, data } = await auth({ action:'change-recovery', password:pw, newRecovery:nc });
+    const { ok, data, err } = await auth({ action:'change-recovery', password:pw, newRecovery:nc });
     if(ok){ msg.textContent='✓ Recovery code updated. Store it somewhere safe.'; msg.className='msg ok';
       document.getElementById('ac_rcpw').value=''; document.getElementById('ac_rc').value=''; }
-    else { msg.textContent=data.error||'Could not update.'; msg.className='msg err'; }
+    else { msg.textContent=err||'Could not update.'; msg.className='msg err'; }
   }
 
   // ---------- LOAD ----------
@@ -471,7 +486,7 @@
       if(res.ok && data.success){
         msg.textContent = '✓ Saved '+data.count+' products. Your store is updating now.'; msg.className='msg ok';
       }else{
-        msg.textContent = data.error || 'Save failed.'; msg.className='msg err';
+        msg.textContent = errText(data, res) || 'Save failed.'; msg.className='msg err';
       }
     }catch(e){
       msg.textContent='Could not reach the server.'; msg.className='msg err';
