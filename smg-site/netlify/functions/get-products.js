@@ -7,11 +7,16 @@
 // ============================================================
 
 const { getStore } = require('@netlify/blobs');
+// Open a Blobs store with explicit creds when Netlify's auto-config isn't available.
+function blobStore(name){
+  const siteID = process.env.NETLIFY_SITE_ID, token = process.env.NETLIFY_BLOBS_TOKEN;
+  return (siteID && token) ? getStore({ name, siteID, token }) : getStore(name);
+}
 const seed = require('../../products.json');
 
 exports.handler = async () => {
   try {
-    const store = getStore('smg-catalog');
+    const store = blobStore('smg-catalog');
     const saved = await store.get('catalog', { type: 'json' });
     const data = saved && Array.isArray(saved.products) && saved.products.length
       ? saved

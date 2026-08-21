@@ -10,6 +10,11 @@
 
 const crypto = require('crypto');
 const { getStore } = require('@netlify/blobs');
+// Open a Blobs store with explicit creds when Netlify's auto-config isn't available.
+function blobStore(name){
+  const siteID = process.env.NETLIFY_SITE_ID, token = process.env.NETLIFY_BLOBS_TOKEN;
+  return (siteID && token) ? getStore({ name, siteID, token }) : getStore(name);
+}
 
 // Verify a password against the stored (changeable) admin credentials.
 // Seeds from ADMIN_PASSWORD/ADMIN_EMAIL on first use, matching admin-auth.js.
@@ -22,7 +27,7 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(ba, bb);
 }
 async function passwordValid(password) {
-  const store = getStore('smg-admin');
+  const store = blobStore('smg-admin');
   let creds = await store.get('credentials', { type: 'json' });
   if (!creds || !creds.hash) {
     const pw = process.env.ADMIN_PASSWORD;
@@ -96,7 +101,7 @@ exports.handler = async (event) => {
   const bios = (body.bios && typeof body.bios === 'object') ? body.bios : {};
 
   try {
-    const store = getStore('smg-catalog');
+    const store = blobStore('smg-catalog');
     await store.setJSON('catalog', { products: clean, bios });
     return json(200, { success: true, count: clean.length });
   } catch (err) {

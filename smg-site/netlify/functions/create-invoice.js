@@ -11,12 +11,17 @@
 // ============================================================
 
 const { getStore } = require('@netlify/blobs');
+// Open a Blobs store with explicit creds when Netlify's auto-config isn't available.
+function blobStore(name){
+  const siteID = process.env.NETLIFY_SITE_ID, token = process.env.NETLIFY_BLOBS_TOKEN;
+  return (siteID && token) ? getStore({ name, siteID, token }) : getStore(name);
+}
 
 // Square credentials: prefer what the owner saved in the admin (Blobs),
 // otherwise fall back to Netlify env vars.
 async function squareConfig() {
   try {
-    const store = getStore('smg-admin');
+    const store = blobStore('smg-admin');
     const sq = await store.get('square', { type: 'json' });
     if (sq && sq.accessToken && sq.locationId) {
       return { token: sq.accessToken, location: sq.locationId, env: sq.env || 'production' };

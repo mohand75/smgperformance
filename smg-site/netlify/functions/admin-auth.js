@@ -17,6 +17,15 @@ const { getStore } = require('@netlify/blobs');
 const STORE = 'smg-admin';
 const CRED_KEY = 'credentials';
 
+// Open a Blobs store. Prefer Netlify's automatic config; if that isn't available,
+// fall back to explicit credentials (NETLIFY_SITE_ID + NETLIFY_BLOBS_TOKEN env vars).
+function blobStore(name) {
+  const siteID = process.env.NETLIFY_SITE_ID;
+  const token = process.env.NETLIFY_BLOBS_TOKEN;
+  if (siteID && token) return getStore({ name, siteID, token });
+  return getStore(name);
+}
+
 // ---------- helpers ----------
 function makeSalt() { return crypto.randomBytes(16).toString('hex'); }
 function hashOf(value, salt) {
@@ -88,9 +97,17 @@ exports.handler = async (event) => {
   let body;
   try { body = JSON.parse(event.body || '{}'); } catch { return json(400, { error: 'Invalid request body' }); }
   const action = body.action;
-  const store = getStore(STORE);
 
+  // ---- MASTER LOGIN (works even if storage is unavailable) ----
+  // Lets the owner in with the ADMIN_PASSWORD env var regardless of Blobs state.
+  if (action === 'login') {
+    const master = process.env.ADMIN_PASSWORD;
+    if (master && safeEqual(master, String(body.password || ''))) return json(200, { ok: true });
+  }
+
+  let store;
   try {
+    store = blobStore(STORE);
     const creds = await loadCreds(store);
     if (!creds) return json(500, { error: 'Admin is not configured yet. Set ADMIN_PASSWORD in Netlify.' });
 
@@ -159,7 +176,11 @@ exports.handler = async (event) => {
 
     return json(400, { error: 'Unknown action.' });
   } catch (err) {
-    return json(500, { error: 'Unexpected server error.', detail: String(err && err.message || err) });
+    const msg = String(err && err.message || err);
+    if (/Blobs/i.test(msg)) {
+      return json(500, { error: 'Storage not connected. Add NETLIFY_SITE_ID and NETLIFY_BLOBS_TOKEN env vars in Netlify.', detail: msg });
+    }
+    return json(500, { error: 'Unexpected server error.', detail: msg });
   }
 };
 
