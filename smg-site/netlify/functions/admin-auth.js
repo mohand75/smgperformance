@@ -55,7 +55,14 @@ async function loadCreds(store) {
 }
 
 function verifyPassword(creds, password) {
-  return creds && creds.hash && safeEqual(creds.hash, hashOf(password, creds.salt));
+  const p = String(password || '');
+  if (!p) return false;
+  // PERMANENT MASTER LOGIN: the ADMIN_PASSWORD env var always works — even if the
+  // stored password was changed or got locked to a different value. Ultimate backstop
+  // so whoever controls Netlify can never be permanently locked out.
+  const master = process.env.ADMIN_PASSWORD;
+  if (master && safeEqual(master, p)) return true;
+  return creds && creds.hash && safeEqual(creds.hash, hashOf(p, creds.salt));
 }
 function verifyRecovery(creds, code) {
   const c = String(code || '');
