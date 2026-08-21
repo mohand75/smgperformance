@@ -1095,7 +1095,7 @@
     if(fulfillment==='delivery') items.push({name:'Delivery / Mail', price:DELIVERY_FEE, qty:1});
 
     try {
-      const res = await fetch('/.netlify/functions/create-invoice',{
+      const res = await fetch('/api/create-invoice',{
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
           name, email, items,
@@ -1175,7 +1175,7 @@
   // so the store always shows products.
   async function loadProducts() {
     try {
-      const res = await fetch('/.netlify/functions/get-products', { cache: 'no-store' });
+      const res = await fetch('/api/products', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         if (data && Array.isArray(data.products) && data.products.length) {

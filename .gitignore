@@ -1,0 +1,4 @@
+
+# local wrangler dev state (contains local KV test data)
+.wrangler/
+node_modules/.mf/
