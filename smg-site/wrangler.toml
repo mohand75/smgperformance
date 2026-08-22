@@ -20,7 +20,7 @@ directory = "."
 binding = "ASSETS"
 
 # The catalogue, admin credentials and Square settings live here.
-# id is filled in from the KV namespace created in the dashboard.
+# This is the "smg-catalog" namespace under Storage & Databases -> KV.
 [[kv_namespaces]]
 binding = "SMG_KV"
-id = "PUT_YOUR_KV_NAMESPACE_ID_HERE"
+id = "768665ffab494317ab6c4d04215d558f"
