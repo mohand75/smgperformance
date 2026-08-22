@@ -5,4 +5,4 @@ Allow: /
 Disallow: /admin.html
 
 # When you connect a custom domain, update this URL too
-Sitemap: https://snazzy-gecko-46df61.netlify.app/sitemap.xml
+Sitemap: https://smg-performance.com/sitemap.xml
