@@ -214,10 +214,10 @@
     if(data && data.error) return data.error;
     if(data && data.errorMessage){
       if(/Blobs/i.test(data.errorType || data.errorMessage))
-        return 'Storage is not connected yet. In Netlify → Site configuration → Environment variables, add NETLIFY_SITE_ID and NETLIFY_BLOBS_TOKEN (same value for all deploy contexts).';
+        return 'Storage is not connected yet. In Cloudflare → Settings → Bindings, add a KV namespace bound as SMG_KV, then redeploy.';
       return 'Server error: ' + data.errorMessage;
     }
-    if(res && res.status === 404) return 'The admin function is not deployed. Check the Netlify functions directory.';
+    if(res && res.status === 404) return 'The admin endpoint is not deployed. Check that the latest deployment succeeded.';
     if(res && !res.ok) return 'Server returned ' + res.status + '.';
     return '';
   }
@@ -255,7 +255,7 @@
         msg.textContent = err || 'Wrong password.'; msg.className='msg err';
       }
     }catch(e){
-      msg.textContent = 'Could not reach the server. Is the site deployed on Netlify?'; msg.className='msg err';
+      msg.textContent = 'Could not reach the server. Check your connection, then reload this page.'; msg.className='msg err';
     }finally{
       btn.disabled = false; btn.textContent = 'Unlock';
     }
@@ -301,7 +301,7 @@
       if(data.source === 'none'){
         el.innerHTML = '<b style="color:var(--amber)">Not connected.</b> Add your Square account below to take payments.';
       } else {
-        const where = data.source === 'admin' ? 'saved here' : 'from Netlify';
+        const where = data.source === 'admin' ? 'saved here' : 'from site settings';
         el.innerHTML = `<b style="color:var(--lime)">Connected</b> (${where}) · Location <code>${data.locationId}</code> · ${data.env} · token …${data.last4}`;
         document.getElementById('pay_loc').placeholder = data.locationId;
         document.getElementById('pay_env').value = data.env;
