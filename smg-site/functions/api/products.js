@@ -28,7 +28,10 @@ export async function onRequestGet(context) {
   }
 
   try {
-    const seed = await fetch(new URL('/products.json', request.url));
+    // Read the seed through the assets binding when there is one. A plain
+    // fetch() back at our own hostname would re-enter this Worker.
+    const seedReq = new Request(new URL('/products.json', request.url), { method: 'GET' });
+    const seed = env.ASSETS ? await env.ASSETS.fetch(seedReq) : await fetch(seedReq);
     if (seed.ok) {
       const data = await seed.json();
       const products = Array.isArray(data) ? data : data.products || [];

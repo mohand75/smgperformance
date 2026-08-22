@@ -1,0 +1,11 @@
+# Keep server-side source and tooling out of the publicly served assets.
+# products.json is deliberately NOT listed — the catalogue endpoint falls
+# back to it, and it holds nothing private.
+worker.js
+wrangler.toml
+functions
+node_modules
+netlify
+netlify.toml
+package.json
+package-lock.json

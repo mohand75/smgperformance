@@ -1,0 +1,26 @@
+# ============================================================
+#  Cloudflare Worker configuration — SMG Performance Labs
+#
+#  Kept in the repo on purpose: the KV binding and asset settings are
+#  applied on every deploy, so nobody has to re-enter them in dashboard
+#  forms (and a wrong form entry can't silently break the store).
+#
+#  Secrets are NOT here and must never be. Add these in the dashboard
+#  under Settings -> Variables and Secrets, as type Secret:
+#    ADMIN_PASSWORD, RECOVERY_CODE,
+#    SQUARE_ACCESS_TOKEN, SQUARE_LOCATION_ID, SQUARE_ENV
+# ============================================================
+
+name = "smgperformance"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+[assets]
+directory = "."
+binding = "ASSETS"
+
+# The catalogue, admin credentials and Square settings live here.
+# id is filled in from the KV namespace created in the dashboard.
+[[kv_namespaces]]
+binding = "SMG_KV"
+id = "PUT_YOUR_KV_NAMESPACE_ID_HERE"
