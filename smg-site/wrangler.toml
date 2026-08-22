@@ -19,6 +19,14 @@ compatibility_date = "2024-11-01"
 directory = "."
 binding = "ASSETS"
 
+# Non-sensitive Square settings. These live here rather than in the dashboard
+# because `wrangler deploy` makes the Worker match this file exactly — a
+# plain-text variable added in the dashboard is wiped on the next deploy.
+# Secrets are stored separately and are NOT affected.
+[vars]
+SQUARE_ENV = "production"
+SQUARE_LOCATION_ID = "LEK2FK4R9VPPY"
+
 # The catalogue, admin credentials and Square settings live here.
 # This is the "smg-catalog" namespace under Storage & Databases -> KV.
 [[kv_namespaces]]
