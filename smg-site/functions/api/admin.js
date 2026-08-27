@@ -103,16 +103,20 @@ async function setPassword(kv, creds, newPassword) {
   return next;
 }
 
-// The image field holds a file name from the site's images/ folder. Owners have
-// pasted `blob:` and `data:` URLs in here from a screenshot tool, which point at
-// something that only ever existed in their own browser tab, so the product ends
-// up with a permanently broken picture. Anything that isn't a plain image file
-// name is dropped, which shows the placeholder instead — visibly wrong in the
-// admin rather than silently wrong on the storefront.
+// The image field holds a BARE name from the site's images/ folder — the
+// storefront renders `images/<img>.png`, so "tirzepatide" is correct and
+// "tirzepatide.png" would resolve to tirzepatide.png.png. A typed extension is
+// therefore stripped rather than rejected, since expecting an owner to know
+// that is unreasonable.
+//
+// The point of the check is to drop `blob:` and `data:` URLs pasted from a
+// screenshot tool: those reference something that only existed in that browser
+// tab, so the product ends up permanently broken. They fail the character test
+// below on their colons and slashes.
 function cleanImageName(value) {
-  const v = String(value || '').trim();
+  const v = String(value || '').trim().replace(/\.(png|jpe?g|webp|gif|svg)$/i, '');
   if (!v) return '';
-  return /^[A-Za-z0-9._-]+\.(png|jpe?g|webp|gif|svg)$/i.test(v) ? v.slice(0, 80) : '';
+  return /^[A-Za-z0-9._-]+$/.test(v) ? v.slice(0, 80) : '';
 }
 
 // Trim and clamp everything the admin sends, so a bad edit can't break the store.
