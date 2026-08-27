@@ -103,6 +103,18 @@ async function setPassword(kv, creds, newPassword) {
   return next;
 }
 
+// The image field holds a file name from the site's images/ folder. Owners have
+// pasted `blob:` and `data:` URLs in here from a screenshot tool, which point at
+// something that only ever existed in their own browser tab, so the product ends
+// up with a permanently broken picture. Anything that isn't a plain image file
+// name is dropped, which shows the placeholder instead — visibly wrong in the
+// admin rather than silently wrong on the storefront.
+function cleanImageName(value) {
+  const v = String(value || '').trim();
+  if (!v) return '';
+  return /^[A-Za-z0-9._-]+\.(png|jpe?g|webp|gif|svg)$/i.test(v) ? v.slice(0, 80) : '';
+}
+
 // Trim and clamp everything the admin sends, so a bad edit can't break the store.
 function cleanCatalog(products) {
   return products.map((p, i) => {
@@ -124,7 +136,7 @@ function cleanCatalog(products) {
       sizes,
       status: ['stock', 'feat', 'restock'].includes(p.status) ? p.status : 'stock',
       lot: String(p.lot || '').slice(0, 40),
-      img: String(p.img || '').slice(0, 80),
+      img: cleanImageName(p.img),
       imgFrame: !!p.imgFrame,
     };
   });

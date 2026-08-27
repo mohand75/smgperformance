@@ -38,6 +38,15 @@ const ROUTES = {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    // Printed QR codes point here rather than straight at the homepage, so the
+    // destination can be changed later without reprinting anything.
+    // Deliberately a 302: browsers cache a 301 hard, which would defeat the
+    // whole point of routing through a redirect.
+    if (url.pathname === '/qr' || url.pathname === '/qr/') {
+      return Response.redirect(new URL('/', url).toString(), 302);
+    }
+
     const route = ROUTES[url.pathname];
 
     if (route) {
