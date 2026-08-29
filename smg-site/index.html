@@ -728,8 +728,8 @@
 <div class="modal-ov" id="modalOv">
   <div class="modal">
     <div id="formState">
-      <h2>Request Your Invoice</h2>
-      <p class="sub">We'll send a Square invoice straight to your inbox. Pay securely at your convenience — no card details entered here.</p>
+      <h2>Complete Your Order</h2>
+      <p class="sub">We'll send an invoice to your inbox. Pay securely at your convenience — no card details are entered here.</p>
       <div class="fr"><label for="cName">Full Name</label><input type="text" id="cName" placeholder="Jane Researcher" autocomplete="name" /></div>
       <div class="fr"><label for="cEmail">Email Address</label><input type="email" id="cEmail" placeholder="jane@researchlab.com" autocomplete="email" /></div>
 
@@ -751,15 +751,15 @@
       <div class="osum" id="osum"></div>
       <div class="m-actions">
         <button class="m-cancel" onclick="closeCheckout()">Cancel</button>
-        <button class="m-send" id="sendBtn" onclick="submitInvoice()"><span id="sendLabel">Send Invoice</span></button>
+        <button class="m-send" id="sendBtn" onclick="submitInvoice()"><span id="sendLabel">Place Order</span></button>
       </div>
       <p class="err" id="errMsg"></p>
     </div>
     <div id="successState" style="display:none;">
       <div class="success">
         <div class="schex"><svg viewBox="0 0 24 24" fill="none" stroke="#A3E635" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
-        <h2>Invoice Sent</h2>
-        <p>Check your inbox at <span class="em" id="successEmail"></span>.<br>Your Square invoice link lets you pay securely.</p>
+        <h2 id="successTitle">Order Received</h2>
+        <p id="successMsg"></p>
         <button class="btn-done" onclick="resetAll()">Back to Catalog</button>
       </div>
     </div>
@@ -1104,12 +1104,35 @@
       });
       const data = await res.json();
       if(!res.ok || data.error) throw new Error((data.error || 'Something went wrong.') + (data.detail ? ' — ' + data.detail : ''));
-      document.getElementById('successEmail').textContent = email;
+      // Say what actually happened. The server knows which payment provider ran
+      // and returns wording to match; assuming "invoice sent" here told customers
+      // to watch an inbox nothing had been sent to.
+      const titleEl = document.getElementById('successTitle');
+      const msgEl = document.getElementById('successMsg');
+      titleEl.textContent = data.provider === 'square' ? 'Invoice Sent' : 'Order Received';
+      msgEl.textContent = '';
+      const text = data.message || ('Order received. We will contact you at ' + email + ' with payment details.');
+      // Render any link in the message as a real link, without ever putting
+      // server text through innerHTML.
+      const linkMatch = text.match(/https:\/\/\S+/);
+      if (linkMatch) {
+        msgEl.appendChild(document.createTextNode(text.slice(0, linkMatch.index)));
+        const a = document.createElement('a');
+        a.href = linkMatch[0];
+        a.textContent = linkMatch[0];
+        a.className = 'em';
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        msgEl.appendChild(a);
+        msgEl.appendChild(document.createTextNode(text.slice(linkMatch.index + linkMatch[0].length)));
+      } else {
+        msgEl.textContent = text;
+      }
       document.getElementById('formState').style.display='none';
       document.getElementById('successState').style.display='block';
     } catch(err){
       errEl.textContent = err.message; errEl.style.display='block';
-      btn.disabled=false; lbl.textContent='Send Invoice';
+      btn.disabled=false; lbl.textContent='Place Order';
     }
   }
   function resetAll(){
@@ -1118,7 +1141,7 @@
     document.getElementById('successState').style.display='none';
     document.getElementById('cName').value=''; document.getElementById('cEmail').value='';
     setFulfill('pickup');
-    document.getElementById('sendBtn').disabled=false; document.getElementById('sendLabel').textContent='Send Invoice';
+    document.getElementById('sendBtn').disabled=false; document.getElementById('sendLabel').textContent='Place Order';
     document.getElementById('errMsg').style.display='none';
   }
 
