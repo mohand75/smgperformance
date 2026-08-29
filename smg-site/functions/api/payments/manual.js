@@ -98,7 +98,10 @@ export async function checkout({ order, config, env }) {
   if (custom) {
     message = custom;
   } else if (link) {
-    message = `Order received — $${record.total.toFixed(2)}. Pay securely here: ${link}`;
+    // Payments Hub links are open-amount pages: the customer types the figure
+    // in themselves and it cannot be pre-filled, so the total is stated twice
+    // and framed as an instruction rather than a receipt line.
+    message = `Order received. Please pay $${record.total.toFixed(2)} here: ${link} — enter $${record.total.toFixed(2)} as the amount.`;
   } else {
     message = DEFAULT_NOTICE;
   }
