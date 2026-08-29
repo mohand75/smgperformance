@@ -179,20 +179,23 @@
     </section>
 
     <section class="acct-sec">
-      <h3>Payment settings (Square)</h3>
-      <p class="hint">Connect your own Square account — customer payments go here. Find these in your Square dashboard under Developer → Applications → Credentials, and Locations.</p>
+      <h3>Payment settings</h3>
+      <p class="hint">Choose who takes customer payments. Switching providers does not affect your products or the rest of the site.</p>
       <div class="pay-status" id="pay_status">Checking…</div>
-      <label>Square access token</label>
-      <input id="pay_token" type="password" autocomplete="off" placeholder="Paste your Square access token">
-      <label>Location ID</label>
-      <input id="pay_loc" type="text" autocomplete="off" placeholder="e.g. LXXXXXXXXXXXX">
-      <label>Mode</label>
-      <select id="pay_env">
-        <option value="production">Production (live payments)</option>
-        <option value="sandbox">Sandbox (testing only)</option>
-      </select>
+      <label for="pay_provider">Payment provider</label>
+      <select id="pay_provider" onchange="renderPayFields()"></select>
+      <div id="pay_fields"></div>
       <button class="primary" onclick="savePayment()">Save payment settings</button>
       <div class="msg" id="pay_msg"></div>
+    </section>
+
+    <section class="acct-sec">
+      <h3>Orders</h3>
+      <p class="hint">Orders recorded while the Manual provider is in use, newest first. Orders paid through a processor appear in that processor's own dashboard, not here.</p>
+      <div id="orders_box"><span class="hint">Loading…</span></div>
+      <button onclick="loadOrders()">Refresh</button>
+      <button class="danger" onclick="clearOrders()">Clear all</button>
+      <div class="msg" id="orders_msg"></div>
     </section>
   </div>
 </div>
@@ -286,42 +289,106 @@
   }
 
   // ---------- ACCOUNT ----------
-  function openAccount(){ document.getElementById('acctOv').classList.add('open'); loadPaymentStatus(); }
+  function openAccount(){
+    document.getElementById('acctOv').classList.add('open');
+    loadPaymentStatus();
+    loadOrders();
+  }
   function closeAccount(){
     document.getElementById('acctOv').classList.remove('open');
-    ['ac_cur','ac_new','ac_rcpw','ac_rc','pay_token','pay_loc'].forEach(id=>document.getElementById(id).value='');
-    ['ac_pwMsg','ac_rcMsg','pay_msg'].forEach(id=>{ const m=document.getElementById(id); m.className='msg'; m.textContent=''; });
+    // The payment inputs are rebuilt per provider, so clear whatever is there
+    // now rather than a fixed list — a stale id here used to throw on null.
+    ['ac_cur','ac_new','ac_rcpw','ac_rc'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+    document.querySelectorAll('#pay_fields input').forEach(el=>{ el.value=''; });
+    ['ac_pwMsg','ac_rcMsg','pay_msg','orders_msg'].forEach(id=>{ const m=document.getElementById(id); if(m){ m.className='msg'; m.textContent=''; } });
   }
+
+  // Provider definitions come from the server so the settings form always
+  // matches whatever providers exist, with no field list duplicated here.
+  let PAY_PROVIDERS = [];
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
   async function loadPaymentStatus(){
     const el = document.getElementById('pay_status');
     try{
-      const { ok, data, err } = await auth({ action:'payment-status', password: PASSWORD });
+      const { ok, data } = await auth({ action:'payment-status', password: PASSWORD });
       if(!ok){ el.textContent = 'Could not load payment status.'; return; }
-      if(data.source === 'none'){
-        el.innerHTML = '<b style="color:var(--amber)">Not connected.</b> Add your Square account below to take payments.';
-      } else {
-        const where = data.source === 'admin' ? 'saved here' : 'from site settings';
-        el.innerHTML = `<b style="color:var(--lime)">Connected</b> (${where}) · Location <code>${data.locationId}</code> · ${data.env} · token …${data.last4}`;
-        document.getElementById('pay_loc').placeholder = data.locationId;
-        document.getElementById('pay_env').value = data.env;
-      }
+
+      PAY_PROVIDERS = data.providers || [];
+      const sel = document.getElementById('pay_provider');
+      sel.innerHTML = PAY_PROVIDERS.map(p=>`<option value="${esc(p.id)}">${esc(p.label)}</option>`).join('');
+      sel.value = data.provider;
+      renderPayFields();
+
+      const where = data.source === 'admin' ? 'saved here' : data.source === 'host' ? 'from site settings' : '';
+      el.innerHTML = data.connected
+        ? `<b style="color:var(--lime)">Connected</b> — ${esc(data.providerLabel)}${where?` (${where})`:''}<br><span class="hint">${esc(data.detail)}</span>`
+        : `<b style="color:var(--amber)">Not connected.</b> ${esc(data.detail)}`;
     }catch(e){ el.textContent = 'Could not load payment status.'; }
   }
 
+  function renderPayFields(){
+    const id = document.getElementById('pay_provider').value;
+    const p = PAY_PROVIDERS.find(x=>x.id===id);
+    const box = document.getElementById('pay_fields');
+    if(!p){ box.innerHTML=''; return; }
+    box.innerHTML = p.fields.map(f=>{
+      const fid = 'payf_'+f.key;
+      let input;
+      if(f.type === 'select'){
+        input = `<select id="${fid}">${(f.options||[]).map(o=>`<option value="${esc(o.value)}">${esc(o.label)}</option>`).join('')}</select>`;
+      } else {
+        input = `<input id="${fid}" type="${f.type==='password'?'password':'text'}" autocomplete="off" placeholder="${esc(f.hint||'')}">`;
+      }
+      return `<label for="${fid}">${esc(f.label)}${f.required?'':' <span class="hint">(optional)</span>'}</label>${input}${f.hint?`<p class="hint">${esc(f.hint)}</p>`:''}`;
+    }).join('');
+  }
+
   async function savePayment(){
-    const token=document.getElementById('pay_token').value.trim();
-    const loc=document.getElementById('pay_loc').value.trim();
-    const env=document.getElementById('pay_env').value;
-    const msg=document.getElementById('pay_msg'); msg.className='msg';
-    if(!token||!loc){ msg.textContent='Enter your Square access token and location ID.'; msg.className='msg err'; return; }
-    if(env==='production' && !confirm('Save LIVE Square settings? Real customer payments will go to this account.')) return;
-    const { ok, data, err } = await auth({ action:'save-payment', password: PASSWORD, accessToken:token, locationId:loc, env });
+    const provider = document.getElementById('pay_provider').value;
+    const p = PAY_PROVIDERS.find(x=>x.id===provider);
+    const msg = document.getElementById('pay_msg'); msg.className='msg';
+    if(!p){ msg.textContent='Pick a payment provider.'; msg.className='msg err'; return; }
+
+    const settings = {};
+    for(const f of p.fields){
+      const el = document.getElementById('payf_'+f.key);
+      if(el) settings[f.key] = el.value.trim();
+    }
+    if(settings.env === 'production' && !confirm('Save LIVE payment settings? Real customer payments will go to this account.')) return;
+
+    const { ok, data, err } = await auth({ action:'save-payment', password: PASSWORD, provider, settings });
     if(ok){
-      msg.textContent='✓ Square account connected.'; msg.className='msg ok';
-      document.getElementById('pay_token').value=''; document.getElementById('pay_loc').value='';
+      msg.textContent = '✓ Saved. ' + (data.detail||''); msg.className='msg ok';
+      // Clear secrets from the form; blank means "keep what's stored".
+      for(const f of p.fields){
+        if(f.type==='password'){ const el=document.getElementById('payf_'+f.key); if(el) el.value=''; }
+      }
       loadPaymentStatus();
-    } else { msg.textContent=err||'Could not save.'; msg.className='msg err'; }
+    } else { msg.textContent = err||'Could not save.'; msg.className='msg err'; }
+  }
+
+  async function loadOrders(){
+    const box = document.getElementById('orders_box');
+    box.innerHTML = '<span class="hint">Loading…</span>';
+    const { ok, data, err } = await auth({ action:'list-orders', password: PASSWORD });
+    if(!ok){ box.innerHTML = `<span class="hint">${esc(err||'Could not load orders.')}</span>`; return; }
+    if(!data.orders.length){ box.innerHTML = '<span class="hint">No recorded orders yet.</span>'; return; }
+    box.innerHTML = data.orders.map(o=>`
+      <div class="pay-status" style="margin-bottom:8px">
+        <b>$${Number(o.total||0).toFixed(2)}</b> · ${esc(o.name)} · <a href="mailto:${esc(o.email)}">${esc(o.email)}</a><br>
+        <span class="hint">${new Date(o.at).toLocaleString()} · ${esc(o.fulfillment)} · ${esc(o.status)}</span><br>
+        <span class="hint">${o.items.map(i=>esc(i.name)+' ×'+esc(i.qty)).join(', ')}</span>
+      </div>`).join('');
+  }
+
+  async function clearOrders(){
+    if(!confirm('Delete every recorded order? This cannot be undone.')) return;
+    const msg = document.getElementById('orders_msg'); msg.className='msg';
+    const { ok, err } = await auth({ action:'clear-orders', password: PASSWORD });
+    if(ok){ msg.textContent='✓ Cleared.'; msg.className='msg ok'; loadOrders(); }
+    else { msg.textContent = err||'Could not clear.'; msg.className='msg err'; }
   }
   async function changePassword(){
     const cur=document.getElementById('ac_cur').value, np=document.getElementById('ac_new').value;

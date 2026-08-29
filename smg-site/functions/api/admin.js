@@ -12,9 +12,10 @@
 //    SQUARE_ACCESS_TOKEN / SQUARE_LOCATION_ID / SQUARE_ENV  (optional fallback)
 // ============================================================
 
+import { getProvider, loadPaymentConfig, savePaymentConfig, describeProviders } from './payments/index.js';
+
 const CRED_KEY = 'credentials';
 const CATALOG_KEY = 'catalog';
-const SQUARE_KEY = 'square';
 
 const enc = new TextEncoder();
 
@@ -222,33 +223,53 @@ export async function onRequestPost(context) {
       return json(200, { ok: true });
     }
 
-    // ---- SQUARE STATUS ---- (never returns the token itself)
+    // ---- PAYMENT STATUS ---- (never returns a stored secret)
     if (action === 'payment-status') {
       if (!(await verifyPassword(creds, body.password, env))) return json(401, { error: 'Password is wrong.' });
-      const sq = await kv.get(SQUARE_KEY, 'json');
-      if (sq && sq.accessToken && sq.locationId) {
-        return json(200, {
-          ok: true, source: 'admin', locationId: sq.locationId,
-          env: sq.env || 'production', last4: String(sq.accessToken).slice(-4),
-        });
-      }
-      const configured = !!(env.SQUARE_ACCESS_TOKEN && env.SQUARE_LOCATION_ID);
+      const { provider: name, config, source } = await loadPaymentConfig(env);
+      const provider = getProvider(name);
+      const state = provider.status(config);
       return json(200, {
-        ok: true, source: configured ? 'host' : 'none',
-        locationId: env.SQUARE_LOCATION_ID || '',
-        env: env.SQUARE_ENV || 'production',
-        last4: configured ? String(env.SQUARE_ACCESS_TOKEN).slice(-4) : '',
+        ok: true,
+        provider: provider.id,
+        providerLabel: provider.label,
+        connected: state.connected,
+        detail: state.detail,
+        source,
+        providers: describeProviders(),
       });
     }
 
     if (action === 'save-payment') {
       if (!(await verifyPassword(creds, body.password, env))) return json(401, { error: 'Password is wrong.' });
-      const token = String(body.accessToken || '').trim();
-      const location = String(body.locationId || '').trim();
-      const sqEnv = body.env === 'sandbox' ? 'sandbox' : 'production';
-      if (!token || !location) return json(400, { error: 'Enter both the Square access token and the location ID.' });
-      await kv.put(SQUARE_KEY, JSON.stringify({ accessToken: token, locationId: location, env: sqEnv }));
-      return json(200, { ok: true, locationId: location, env: sqEnv, last4: token.slice(-4) });
+      // Older admin builds posted Square fields with no provider name.
+      const name = body.provider || 'square';
+      const result = await savePaymentConfig(env, name, body.settings || body);
+      if (!result.ok) return json(400, { error: result.error });
+      return json(200, {
+        ok: true,
+        provider: result.provider,
+        connected: result.status.connected,
+        detail: result.status.detail,
+      });
+    }
+
+    // ---- ORDERS ---- (recorded by the manual provider)
+    if (action === 'list-orders') {
+      if (!(await verifyPassword(creds, body.password, env))) return json(401, { error: 'Password is wrong.' });
+      let orders = [];
+      try {
+        orders = (await kv.get('orders', 'json')) || [];
+      } catch {
+        orders = [];
+      }
+      return json(200, { ok: true, orders: Array.isArray(orders) ? orders : [] });
+    }
+
+    if (action === 'clear-orders') {
+      if (!(await verifyPassword(creds, body.password, env))) return json(401, { error: 'Password is wrong.' });
+      await kv.put('orders', JSON.stringify([]));
+      return json(200, { ok: true });
     }
 
     return json(400, { error: 'Unknown action.' });
