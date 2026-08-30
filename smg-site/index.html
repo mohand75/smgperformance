@@ -1107,9 +1107,7 @@
       // Say what actually happened. The server knows which payment provider ran
       // and returns wording to match; assuming "invoice sent" here told customers
       // to watch an inbox nothing had been sent to.
-      const titleEl = document.getElementById('successTitle');
       const msgEl = document.getElementById('successMsg');
-      titleEl.textContent = data.provider === 'square' ? 'Invoice Sent' : 'Order Received';
       msgEl.textContent = '';
       const text = data.message || ('Order received. We will contact you at ' + email + ' with payment details.');
       // Render any link in the message as a real link, without ever putting
