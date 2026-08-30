@@ -266,9 +266,36 @@ export async function onRequestPost(context) {
       return json(200, { ok: true, orders: Array.isArray(orders) ? orders : [] });
     }
 
-    if (action === 'clear-orders') {
+    // Mark an order invoiced/paid, or remove it. With manual billing the owner
+    // needs to see what she has already acted on, or the same order gets
+    // invoiced twice or missed entirely.
+    if (action === 'update-order') {
       if (!(await verifyPassword(creds, body.password, env))) return json(401, { error: 'Password is wrong.' });
-      await kv.put('orders', JSON.stringify([]));
+      const id = String(body.id || '');
+      if (!id) return json(400, { error: 'No order specified.' });
+
+      let orders = [];
+      try {
+        orders = (await kv.get('orders', 'json')) || [];
+      } catch {
+        orders = [];
+      }
+      if (!Array.isArray(orders)) orders = [];
+
+      const before = orders.length;
+      if (body.remove === true) {
+        orders = orders.filter((o) => o.id !== id);
+        if (orders.length === before) return json(404, { error: 'That order no longer exists.' });
+      } else {
+        const allowed = ['awaiting-invoice', 'invoiced', 'paid'];
+        const status = String(body.status || '');
+        if (!allowed.includes(status)) return json(400, { error: 'Unknown order status.' });
+        const found = orders.find((o) => o.id === id);
+        if (!found) return json(404, { error: 'That order no longer exists.' });
+        found.status = status;
+      }
+
+      await kv.put('orders', JSON.stringify(orders));
       return json(200, { ok: true });
     }
 

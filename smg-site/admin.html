@@ -78,6 +78,26 @@
   .full{margin-top:12px}
   .hint{font-size:11px;color:var(--muted);margin-top:4px}
   @media(max-width:720px){.grid{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+  /* Tabs */
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px}
+  .tab{background:transparent;border:none;border-bottom:2px solid transparent;border-radius:0;padding:11px 16px;color:var(--muted);font-weight:600}
+  .tab:hover{color:var(--text);border-color:var(--line)}
+  .tab.active{color:var(--lime);border-bottom-color:var(--lime)}
+  .tab .pill{display:inline-block;min-width:18px;padding:1px 6px;margin-left:7px;border-radius:9px;background:var(--panel2);color:var(--text);font-size:11px;vertical-align:1px}
+  .tab.active .pill{background:var(--lime);color:#0d0f0b}
+  /* Orders */
+  .ord{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+  .ord.done{opacity:.55}
+  .ord-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .ord-total{font-size:19px;font-weight:700;color:var(--lime)}
+  .ord-when{color:var(--muted);font-size:12px;margin-left:auto}
+  .ord-items{margin:9px 0 0;padding-left:18px;color:var(--text);font-size:14px}
+  .ord-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .ord-acts button{padding:6px 11px;font-size:13px}
+  .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border:1px solid var(--line)}
+  .badge.awaiting{color:var(--amber);border-color:#4a3a12}
+  .badge.invoiced{color:#7dd3fc;border-color:#1e3a4a}
+  .badge.paid{color:var(--lime);border-color:#2a4318}
   .savebar{position:fixed;left:0;right:0;bottom:0;background:rgba(13,15,11,.96);border-top:1px solid var(--line);padding:12px 16px;display:flex;justify-content:center;gap:12px;align-items:center}
   .savebar .inner{width:100%;max-width:1000px;display:flex;gap:12px;align-items:center}
   .spinner{display:inline-block;width:14px;height:14px;border:2px solid #0d0f0b;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px}
@@ -124,8 +144,8 @@
 <div id="editor" class="wrap">
   <header>
     <div>
-      <h1>SMG <span>Admin</span> — Products</h1>
-      <p class="sub">Edit anything, then hit <strong>Save all changes</strong>. Your live store updates within a minute.</p>
+      <h1>SMG <span>Admin</span></h1>
+      <p class="sub" id="tabSub">Edit anything, then hit <strong>Save all changes</strong>. Your live store updates within a minute.</p>
     </div>
     <div style="display:flex;gap:10px">
       <a href="/" target="_blank"><button>View store ↗</button></a>
@@ -134,13 +154,34 @@
     </div>
   </header>
 
-  <div class="toolbar">
-    <button class="primary" onclick="addProduct()">+ Add product</button>
-    <div class="grow"></div>
-    <span class="count" id="count"></span>
+  <div class="tabs">
+    <button class="tab active" id="tabBtnProducts" onclick="showTab('products')">Products</button>
+    <button class="tab" id="tabBtnOrders" onclick="showTab('orders')">Orders <span class="pill" id="ordPill">0</span></button>
   </div>
 
-  <div id="list"></div>
+  <div id="tabProducts">
+    <div class="toolbar">
+      <button class="primary" onclick="addProduct()">+ Add product</button>
+      <div class="grow"></div>
+      <span class="count" id="count"></span>
+    </div>
+    <div id="list"></div>
+  </div>
+
+  <div id="tabOrders" style="display:none">
+    <div class="toolbar">
+      <button onclick="loadOrders()">Refresh</button>
+      <select id="ordFilter" style="width:auto" onchange="renderOrders()">
+        <option value="open">Needs action</option>
+        <option value="all">All orders</option>
+        <option value="paid">Paid</option>
+      </select>
+      <div class="grow"></div>
+      <span class="count" id="ordCount"></span>
+    </div>
+    <div id="orders_box"><span class="hint">Loading…</span></div>
+    <div class="msg" id="orders_msg"></div>
+  </div>
 
   <div class="savebar">
     <div class="inner">
@@ -189,14 +230,6 @@
       <div class="msg" id="pay_msg"></div>
     </section>
 
-    <section class="acct-sec">
-      <h3>Orders</h3>
-      <p class="hint">Orders recorded while the Manual provider is in use, newest first. Orders paid through a processor appear in that processor's own dashboard, not here.</p>
-      <div id="orders_box"><span class="hint">Loading…</span></div>
-      <button onclick="loadOrders()">Refresh</button>
-      <button class="danger" onclick="clearOrders()">Clear all</button>
-      <div class="msg" id="orders_msg"></div>
-    </section>
   </div>
 </div>
 
@@ -254,6 +287,7 @@
         document.getElementById('login').style.display='none';
         document.getElementById('editor').style.display='block';
         await loadCatalog();
+        loadOrders(); // fills the Orders tab badge so waiting orders are visible immediately
       } else {
         msg.textContent = err || 'Wrong password.'; msg.className='msg err';
       }
@@ -292,7 +326,6 @@
   function openAccount(){
     document.getElementById('acctOv').classList.add('open');
     loadPaymentStatus();
-    loadOrders();
   }
   function closeAccount(){
     document.getElementById('acctOv').classList.remove('open');
@@ -300,7 +333,7 @@
     // now rather than a fixed list — a stale id here used to throw on null.
     ['ac_cur','ac_new','ac_rcpw','ac_rc'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
     document.querySelectorAll('#pay_fields input').forEach(el=>{ el.value=''; });
-    ['ac_pwMsg','ac_rcMsg','pay_msg','orders_msg'].forEach(id=>{ const m=document.getElementById(id); if(m){ m.className='msg'; m.textContent=''; } });
+    ['ac_pwMsg','ac_rcMsg','pay_msg'].forEach(id=>{ const m=document.getElementById(id); if(m){ m.className='msg'; m.textContent=''; } });
   }
 
   // Provider definitions come from the server so the settings form always
@@ -369,26 +402,90 @@
     } else { msg.textContent = err||'Could not save.'; msg.className='msg err'; }
   }
 
+  // ---------- ORDERS TAB ----------
+  let ORDERS = [];
+
+  function showTab(name){
+    const isProducts = name === 'products';
+    document.getElementById('tabProducts').style.display = isProducts ? 'block' : 'none';
+    document.getElementById('tabOrders').style.display   = isProducts ? 'none'  : 'block';
+    document.getElementById('tabBtnProducts').classList.toggle('active', isProducts);
+    document.getElementById('tabBtnOrders').classList.toggle('active', !isProducts);
+    // The save bar belongs to the product editor; showing it over Orders
+    // invites saving from a screen that has nothing to save.
+    document.querySelector('.savebar').style.display = isProducts ? 'flex' : 'none';
+    document.getElementById('tabSub').innerHTML = isProducts
+      ? 'Edit anything, then hit <strong>Save all changes</strong>. Your live store updates within a minute.'
+      : 'Orders customers placed on the site. Invoice them from your payment processor, then mark them here.';
+    if(!isProducts) loadOrders();
+  }
+
   async function loadOrders(){
     const box = document.getElementById('orders_box');
     box.innerHTML = '<span class="hint">Loading…</span>';
     const { ok, data, err } = await auth({ action:'list-orders', password: PASSWORD });
     if(!ok){ box.innerHTML = `<span class="hint">${esc(err||'Could not load orders.')}</span>`; return; }
-    if(!data.orders.length){ box.innerHTML = '<span class="hint">No recorded orders yet.</span>'; return; }
-    box.innerHTML = data.orders.map(o=>`
-      <div class="pay-status" style="margin-bottom:8px">
-        <b>$${Number(o.total||0).toFixed(2)}</b> · ${esc(o.name)} · <a href="mailto:${esc(o.email)}">${esc(o.email)}</a><br>
-        <span class="hint">${new Date(o.at).toLocaleString()} · ${esc(o.fulfillment)} · ${esc(o.status)}</span><br>
-        <span class="hint">${o.items.map(i=>esc(i.name)+' ×'+esc(i.qty)).join(', ')}</span>
-      </div>`).join('');
+    ORDERS = data.orders || [];
+    renderOrders();
   }
 
-  async function clearOrders(){
-    if(!confirm('Delete every recorded order? This cannot be undone.')) return;
+  function renderOrders(){
+    const box = document.getElementById('orders_box');
+    const filter = document.getElementById('ordFilter').value;
+    const open = ORDERS.filter(o => o.status !== 'paid');
+    document.getElementById('ordPill').textContent = open.length;
+
+    let list = ORDERS;
+    if(filter === 'open') list = open;
+    else if(filter === 'paid') list = ORDERS.filter(o => o.status === 'paid');
+
+    const sum = list.reduce((t,o)=> t + (Number(o.total)||0), 0);
+    document.getElementById('ordCount').textContent =
+      `${list.length} order${list.length===1?'':'s'} · $${sum.toFixed(2)}`;
+
+    if(!list.length){
+      box.innerHTML = `<span class="hint">${filter==='open'?'Nothing waiting — every order is marked paid.':'No orders yet.'}</span>`;
+      return;
+    }
+
+    box.innerHTML = list.map(o=>{
+      const st = o.status || 'awaiting-invoice';
+      const cls = st==='paid' ? 'paid' : st==='invoiced' ? 'invoiced' : 'awaiting';
+      const nice = st==='paid' ? 'Paid' : st==='invoiced' ? 'Invoiced' : 'Needs invoice';
+      return `<div class="ord${st==='paid'?' done':''}">
+        <div class="ord-top">
+          <span class="ord-total">$${(Number(o.total)||0).toFixed(2)}</span>
+          <span class="badge ${cls}">${nice}</span>
+          <span class="ord-when">${new Date(o.at).toLocaleString()}</span>
+        </div>
+        <div style="margin-top:6px">
+          <b>${esc(o.name)}</b> · <a href="mailto:${esc(o.email)}">${esc(o.email)}</a>
+          · <span class="hint">${esc(o.fulfillment==='delivery'?'Delivery / mail':'Gym pickup')}</span>
+        </div>
+        <ul class="ord-items">${o.items.map(i=>`<li>${esc(i.name)} × ${esc(i.qty)} — $${(Number(i.price)||0).toFixed(2)} each</li>`).join('')}</ul>
+        <div class="ord-acts">
+          ${st!=='invoiced'&&st!=='paid' ? `<button onclick="setOrder('${esc(o.id)}','invoiced')">Mark invoiced</button>`:''}
+          ${st!=='paid' ? `<button class="primary" onclick="setOrder('${esc(o.id)}','paid')">Mark paid</button>`:''}
+          ${st==='paid' ? `<button onclick="setOrder('${esc(o.id)}','awaiting-invoice')">Reopen</button>`:''}
+          <button class="danger" onclick="deleteOrder('${esc(o.id)}')">Delete</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  async function setOrder(id, status){
     const msg = document.getElementById('orders_msg'); msg.className='msg';
-    const { ok, err } = await auth({ action:'clear-orders', password: PASSWORD });
-    if(ok){ msg.textContent='✓ Cleared.'; msg.className='msg ok'; loadOrders(); }
-    else { msg.textContent = err||'Could not clear.'; msg.className='msg err'; }
+    const { ok, err } = await auth({ action:'update-order', password: PASSWORD, id, status });
+    if(ok) loadOrders();
+    else { msg.textContent = err||'Could not update the order.'; msg.className='msg err'; }
+  }
+
+  async function deleteOrder(id){
+    if(!confirm('Delete this order? This cannot be undone.')) return;
+    const msg = document.getElementById('orders_msg'); msg.className='msg';
+    const { ok, err } = await auth({ action:'update-order', password: PASSWORD, id, remove:true });
+    if(ok) loadOrders();
+    else { msg.textContent = err||'Could not delete the order.'; msg.className='msg err'; }
   }
   async function changePassword(){
     const cur=document.getElementById('ac_cur').value, np=document.getElementById('ac_new').value;
