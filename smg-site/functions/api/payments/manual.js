@@ -20,8 +20,11 @@ export const fields = [
     hint: 'Leave blank to use the default wording.' },
 ];
 
-const DEFAULT_NOTICE =
-  'Order received. We will email you payment details shortly to complete your order.';
+// Tell the customer when to expect the invoice. "Shortly" leaves them wondering
+// whether the order went through; a stated window does not.
+function defaultNotice(order) {
+  return `Order received. We'll email your invoice to ${order.email} within 24 hours so you can pay securely.`;
+}
 
 // Only allow a real https link to be shown to customers. A malformed value here
 // would be rendered at checkout, so it is validated rather than trusted.
@@ -103,7 +106,7 @@ export async function checkout({ order, config, env }) {
     // and framed as an instruction rather than a receipt line.
     message = `Order received. Please pay $${record.total.toFixed(2)} here: ${link} — enter $${record.total.toFixed(2)} as the amount.`;
   } else {
-    message = DEFAULT_NOTICE;
+    message = defaultNotice(order);
   }
 
   return { ok: true, reference: record.id, message, payLink: link || undefined, total: record.total };
